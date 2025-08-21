@@ -40,11 +40,12 @@ services:
       - "${PHX_PORT:-4000}:4000"
     volumes:
       - .:/app
-      - /app/deps
-      - /app/_build
+      - deps_cache:/app/deps
+      - build_cache:/app/_build
     restart: unless-stopped
     command: mix phx.server
 
 volumes:
   postgres_data:
-  redis_data:
+  deps_cache: 
+  build_cache:
