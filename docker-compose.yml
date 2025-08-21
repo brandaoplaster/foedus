@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:13
+    container_name: foedus_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-foedus_dev}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  app:
+    build: 
+      context: .
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    container_name: foedus_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-ecto://postgres:postgres@db:5432/foedus_dev}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your_secret_key_base_here}
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PHX_PORT: ${PHX_PORT:-4000}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-foedus_dev}
+    ports:
+      - "${PHX_PORT:-4000}:4000"
+    volumes:
+      - .:/app
+      - deps_cache:/app/deps
+      - build_cache:/app/_build
+    restart: unless-stopped
+    command: mix phx.server
+
+volumes:
+  postgres_data:
+  deps_cache: 
+  build_cache:
