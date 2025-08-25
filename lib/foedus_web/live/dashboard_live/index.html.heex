@@ -1,0 +1,193 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <.header>
+      Contract Management - Foedus
+      <:subtitle>Welcome <%= @user.email %>! Manage your templates and contracts.</:subtitle>
+      <:actions>
+        <FoedusWeb.Components.UI.Button.button 
+          variant="secondary" 
+          icon="refresh"
+          phx-click="refresh_stats"
+        >
+          Refresh
+        </FoedusWeb.Components.UI.Button.button>
+      </:actions>
+    </.header>
+
+    <div class="mt-10 space-y-8">
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <FoedusWeb.Components.UI.Card.stat_card
+          title="Templates Created" 
+          value={@stats.total_templates}
+          icon="template"
+          color="blue"
+        />
+        
+        <FoedusWeb.Components.UI.Card.stat_card
+          title="Active Contracts" 
+          value={@stats.active_contracts}
+          icon="check"
+          color="green"
+        />
+        
+        <FoedusWeb.Components.UI.Card.stat_card
+          title="Pending Approval" 
+          value={@stats.pending_approval}
+          icon="clock"
+          color="yellow"
+        />
+        
+        <FoedusWeb.Components.UI.Card.stat_card
+          title="Monthly Revenue" 
+          value={@stats.monthly_revenue}
+          icon="dollar"
+          color="purple"
+        />
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Quick Actions -->
+        <div class="lg:col-span-1">
+          <FoedusWeb.Components.UI.Card.card>
+            <:header>
+              <h3 class="text-lg leading-6 font-semibold text-gray-900">
+                Quick Actions
+              </h3>
+            </:header>
+            <div class="p-6 space-y-3">
+              <FoedusWeb.Components.UI.Button.button 
+                variant="primary" 
+                icon="plus" 
+                full_width={true}
+                phx-click="create_template"
+              >
+                Create Template
+              </FoedusWeb.Components.UI.Button.button>
+              
+              <FoedusWeb.Components.UI.Button.button 
+                variant="secondary" 
+                icon="document" 
+                full_width={true}
+                phx-click="view_contracts"
+              >
+                View Contracts
+              </FoedusWeb.Components.UI.Button.button>
+              
+              <FoedusWeb.Components.UI.Button.button 
+                variant="secondary" 
+                icon="chart" 
+                full_width={true}
+                phx-click="analytics"
+              >
+                Analytics & Reports
+              </FoedusWeb.Components.UI.Button.button>
+              
+              <FoedusWeb.Components.UI.Button.button 
+                variant="secondary" 
+                icon="cog" 
+                full_width={true}
+                phx-click="settings"
+              >
+                Settings
+              </FoedusWeb.Components.UI.Button.button>
+            </div>
+          </FoedusWeb.Components.UI.Card.card>
+        </div>
+
+        <!-- Pending Contracts -->
+        <div class="lg:col-span-2">
+          <FoedusWeb.Components.UI.Card.card>
+            <:header>
+              <h3 class="text-lg leading-6 font-semibold text-gray-900">
+                Pending Contracts
+              </h3>
+            </:header>
+            <div class="overflow-hidden">
+              <%= if length(@pending_contracts) > 0 do %>
+                <div class="divide-y divide-gray-200">
+                  <%= for contract <- @pending_contracts do %>
+                    <div class="px-6 py-4">
+                      <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center space-x-3">
+                            <div class="flex-shrink-0 w-36 ">
+                              <FoedusWeb.Components.UI.Badge.status_badge status={contract.status} />
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-sm font-medium text-gray-900 truncate">
+                                <%= contract.client %>
+                              </p>
+                              <p class="text-sm text-gray-500">
+                                <%= contract.template %> • <%= contract.value %>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                          <%= if contract.status == "pending_approval" do %>
+                            <FoedusWeb.Components.UI.Button.button 
+                              variant="success" 
+                              size="sm"
+                              phx-click="approve_contract" 
+                              phx-value-id={contract.id}
+                            >
+                              Approve
+                            </FoedusWeb.Components.UI.Button.button>
+                          <% end %>
+                          <FoedusWeb.Components.UI.Button.button 
+                            variant="secondary" 
+                            size="sm"
+                            phx-click="review_contract" 
+                            phx-value-id={contract.id}
+                          >
+                            Review
+                          </FoedusWeb.Components.UI.Button.button>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="px-6 py-8 text-center">
+                  <FoedusWeb.Components.UI.Icon.icon name="document" class="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 class="mt-2 text-sm font-medium text-gray-900">No pending contracts</h3>
+                  <p class="mt-1 text-sm text-gray-500">All contracts are up to date!</p>
+                </div>
+              <% end %>
+            </div>
+          </FoedusWeb.Components.UI.Card.card>
+        </div>
+      </div>
+
+      <!-- Recent Activities -->
+      <FoedusWeb.Components.UI.Card.card>
+        <:header>
+          <h3 class="text-lg leading-6 font-semibold text-gray-900">
+            Recent Activities
+          </h3>
+        </:header>
+        <div class="divide-y divide-gray-200">
+          <%= for activity <- @activities do %>
+            <div class="px-6 py-4">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                  <FoedusWeb.Components.UI.Icon.activity_icon type={activity.type} />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900">
+                    <%= activity.title %>
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    <%= activity.description %> • <%= activity.time %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </FoedusWeb.Components.UI.Card.card>
+    </div>
+  </div>
+</div>
