@@ -7,7 +7,9 @@ defmodule FoedusWeb.Components.UI.Button do
     "primary" => "border-transparent text-white bg-indigo-600 hover:bg-indigo-700",
     "secondary" => "border-gray-300 text-gray-700 bg-white hover:bg-gray-50",
     "success" => "border-transparent text-white bg-green-600 hover:bg-green-700",
-    "danger" => "border-transparent text-white bg-red-600 hover:bg-red-700"
+    "danger" => "border-transparent text-white bg-red-600 hover:bg-red-700",
+    "cta_primary" => "group relative border-transparent text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl",
+    "cta_secondary" => "border-white/20 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20"
   }
 
   attr :variant, :string, default: "primary"
