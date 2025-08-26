@@ -13,15 +13,15 @@ defmodule FoedusWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
 
-  scope "/", FoedusWeb do
-    pipe_through :browser
+  # scope "/", FoedusWeb do
+  #   pipe_through :browser
 
-    get "/", PageController, :home
-  end
+  #   # get "/", PageController, :home
+  # end
 
   # Other scopes may use custom stacks.
   # scope "/api", FoedusWeb do
@@ -45,6 +45,12 @@ defmodule FoedusWeb.Router do
     end
   end
 
+  scope "/", FoedusWeb do
+    pipe_through :browser
+
+    live "/", HomeLive.Index, :index
+  end
+
   ## Authentication routes
 
   scope "/", FoedusWeb do
@@ -59,6 +65,8 @@ defmodule FoedusWeb.Router do
     end
 
     post "/users/log_in", UserSessionController, :create
+
+    # live "/", HomeLive.Index, :index
   end
 
   scope "/", FoedusWeb do
