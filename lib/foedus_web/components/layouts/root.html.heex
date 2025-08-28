@@ -4,178 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
+    
     <.live_title default="Foedus - Gestão de Contratos" suffix=" · Foedus">
       {assigns[:page_title]}
     </.live_title>
+    
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
-    </script>
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
   </head>
-  <body class="bg-gray-50 min-h-screen">
-    <!-- Header/Navbar Fixo -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Logo/Brand -->
-          <div class="flex items-center">
-            <.link navigate={~p"/"} class="flex items-center space-x-2">
-              <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <span class="text-xl font-bold text-gray-900">Foedus</span>
-            </.link>
-          </div>
 
-          <!-- Navigation Menu -->
-          <%= if @current_user do %>
-            <nav class="hidden md:flex items-center space-x-8">
-              <.link 
-                navigate={~p"/dashboard"} 
-                class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Dashboard
-              </.link>
-              <.link 
-                href="#" 
-                class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Templates
-              </.link>
-              <.link 
-                href="#" 
-                class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Contratos
-              </.link>
-              <.link 
-                href="#" 
-                class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Relatórios
-              </.link>
-            </nav>
-          <% end %>
-
-          <!-- User Menu -->
-          <div class="flex items-center space-x-4">
-            <%= if @current_user do %>
-              <!-- User Info & Actions -->
-              <div class="hidden sm:flex items-center space-x-4">
-                <span class="text-sm text-gray-700">
-                  Olá, <span class="font-medium">{@current_user.email}</span>
-                </span>
-                <div class="flex items-center space-x-2">
-                  <.link
-                    href={~p"/users/settings"}
-                    class="text-sm text-gray-600 hover:text-indigo-600 font-medium transition-colors"
-                  >
-                    Configurações
-                  </.link>
-                  <span class="text-gray-300">|</span>
-                  <.link
-                    href={~p"/users/log_out"}
-                    method="delete"
-                    class="text-sm text-gray-600 hover:text-red-600 font-medium transition-colors"
-                  >
-                    Sair
-                  </.link>
-                </div>
-              </div>
-
-              <!-- Mobile User Menu -->
-              <div class="sm:hidden">
-                <button 
-                  type="button" 
-                  class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
-                >
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                </button>
-              </div>
-            <% else %>
-              <!-- Auth Links -->
-              <div class="flex items-center space-x-4">
-                <.link
-                  href={~p"/users/log_in"}
-                  class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors"
-                >
-                  Entrar
-                </.link>
-                <.link
-                  href={~p"/users/register"}
-                  class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
-                >
-                  Cadastrar
-                </.link>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <%= if @current_user do %>
-          <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-gray-200">
-            <div class="space-y-2">
-              <.link 
-                navigate={~p"/dashboard"} 
-                class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Dashboard
-              </.link>
-              <.link 
-                href="#" 
-                class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Templates
-              </.link>
-              <.link 
-                href="#" 
-                class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Contratos
-              </.link>
-              <.link 
-                href="#" 
-                class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Relatórios
-              </.link>
-              <hr class="my-2 border-gray-200">
-              <.link
-                href={~p"/users/settings"}
-                class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Configurações
-              </.link>
-              <.link
-                href={~p"/users/log_out"}
-                method="delete"
-                class="block px-3 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md text-sm font-medium transition-colors"
-              >
-                Sair
-              </.link>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </header>
-
-    <!-- Main Content com padding-top para compensar header fixo -->
-    <main class="pt-16">
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <.app_header current_user={@current_user} />
+    
+    <main class="flex-1 pt-32">
       {@inner_content}
     </main>
-
-    <!-- Footer (opcional) -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="text-center text-sm text-gray-500">
-          © 2025 Foedus - Sistema de Gestão de Contratos. Todos os direitos reservados.
-        </div>
-      </div>
-    </footer>
+    
+    <.app_footer />
   </body>
 </html>
