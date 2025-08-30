@@ -78,6 +78,12 @@ defmodule FoedusWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/dashboard", DashboardLive.Index
+       live "/contract_templates", ContractTemplateLive.Index, :index
+    live "/contract_templates/new", ContractTemplateLive.Index, :new
+    live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
+
+    live "/contract_templates/:id", ContractTemplateLive.Show, :show
+    live "/contract_templates/:id/show/edit", ContractTemplateLive.Show, :edit
     end
   end
 
