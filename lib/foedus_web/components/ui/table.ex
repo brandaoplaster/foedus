@@ -23,7 +23,7 @@ defmodule FoedusWeb.Ui.Table do
 
   def data_table(assigns) do
     ~H"""
-    <div class={["overflow-hidden shadow-xl ring-1 ring-black ring-opacity-5 rounded-xl border border-gray-100", @class]} id={@id}>
+    <div class={["overflow-hidden ring-1 ring-black ring-opacity-5 border-gray-100", @class]} id={@id}>
       <table class={@table_class}>
         <thead class={@thead_class}>
           <tr>
