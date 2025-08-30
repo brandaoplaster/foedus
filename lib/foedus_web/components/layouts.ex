@@ -50,7 +50,7 @@ defmodule FoedusWeb.Layouts do
     <%= if @current_user do %>
       <nav class="hidden md:flex items-center space-x-8">
         <.nav_link navigate={~p"/dashboard"}>Dashboard</.nav_link>
-        <.nav_link href="#">Templates</.nav_link>
+        <.nav_link navigate={~p"/contract_templates"}>Templates</.nav_link>
         <.nav_link href="#">Contratos</.nav_link>
         <.nav_link href="#">Relatórios</.nav_link>
       </nav>
@@ -100,7 +100,7 @@ defmodule FoedusWeb.Layouts do
       <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-gray-200">
         <div class="space-y-2">
           <.mobile_nav_link navigate={~p"/dashboard"}>Dashboard</.mobile_nav_link>
-          <.mobile_nav_link href="#">Templates</.mobile_nav_link>
+          <.mobile_nav_link navigate={~p"/contract_templates"} >Templates</.mobile_nav_link>
           <.mobile_nav_link href="#">Contratos</.mobile_nav_link>
           <.mobile_nav_link href="#">Relatórios</.mobile_nav_link>
 
