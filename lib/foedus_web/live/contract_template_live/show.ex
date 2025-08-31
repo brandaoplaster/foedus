@@ -2,7 +2,7 @@ defmodule FoedusWeb.ContractTemplateLive.Show do
   use FoedusWeb, :live_view
 
   alias Foedus.Contracts
-    import FoedusWeb.Ui.Breadcrumb
+  import FoedusWeb.Ui.Breadcrumb
 
   @impl true
   def mount(_params, _session, socket) do
