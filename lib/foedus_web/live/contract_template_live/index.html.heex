@@ -6,7 +6,10 @@
         <p class="mt-2 text-lg text-gray-600">Manage your contract templates here.</p>
       </:subtitle>
       <:actions>
-        <.link patch={~p"/contract_templates/new"}>
+        <.link
+          patch={~p"/contract_templates/new"}
+          phx-click={JS.push_focus()}
+        >
           <.button class="bg-indigo-700 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-lg shadow-sm transition-colors duration-200">
             New Template
           </.button>
@@ -30,5 +33,24 @@
       tbody_class="bg-white divide-y divide-gray-200"
       td_class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
     />
+
+    <.modal
+      :if={@live_action == :new}
+      id="contract_template-modal"
+      show
+      on_cancel={JS.patch(~p"/contract_templates")}
+      class="!w-[98vw] !h-[95vh] !m-2"
+    >
+      <div class="!p-0 !h-full !overflow-hidden">
+        <.live_component
+          module={FoedusWeb.ContractTemplateLive.FormComponent}
+          id={@contract_template.id || :new}
+          title={@page_title}
+          action={@live_action}
+          contract_template={@contract_template}
+          patch={~p"/contract_templates"}
+        />
+      </div>
+    </.modal>
   </div>
 </div>
