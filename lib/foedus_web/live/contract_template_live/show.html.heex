@@ -1,6 +1,5 @@
 <div class="min-h-screen p-2 bg-gradient-to-br from-slate-50 to-blue-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
     <.breadcrumb>
       <.breadcrumb_link navigate={~p"/contract_templates"}>
         Contract Templates
@@ -280,21 +279,24 @@
         </div>
       </div>
     </div>
-    
+
     <.modal
       :if={@live_action == :edit}
       id="contract_template-modal"
       show
       on_cancel={JS.patch(~p"/contract_templates/#{@contract_template}")}
+      class="!w-[98vw] !h-[95vh] !m-2"
     >
-      <.live_component
-        module={FoedusWeb.ContractTemplateLive.FormComponent}
-        id={@contract_template.id}
-        title={@page_title}
-        action={@live_action}
-        contract_template={@contract_template}
-        patch={~p"/contract_templates/#{@contract_template}"}
-      />
+      <div class="!p-0  !h-full !overflow-hidden">
+        <.live_component
+          module={FoedusWeb.ContractTemplateLive.FormComponent}
+          id={@contract_template.id}
+          title={@page_title}
+          action={@live_action}
+          contract_template={@contract_template}
+          patch={~p"/contract_templates/#{@contract_template}"}
+        />
+      </div>
     </.modal>
   </div>
 </div>
