@@ -19,6 +19,12 @@ defmodule FoedusWeb.ContractTemplateLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  defp apply_action(socket, :new, _params) do
+    socket
+    |> assign(:page_title, "New Contract template")
+    |> assign(:contract_template, %Contracts.ContractTemplate{})
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Contract templates")
