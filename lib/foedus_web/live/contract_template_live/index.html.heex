@@ -1,0 +1,59 @@
+<div class="min-h-screen p-2 bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <.header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Contract Templates</h1>
+      <:subtitle>
+        <p class="mt-2 text-lg text-gray-600">Manage your contract templates here.</p>
+      </:subtitle>
+      <:actions>
+        <.link
+          patch={~p"/contract_templates/new"}
+          phx-click={JS.push_focus()}
+        >
+          <.button class="bg-indigo-700 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-lg shadow-sm transition-colors duration-200">
+            New Template
+          </.button>
+        </.link>
+      </:actions>
+    </.header>
+
+    <.data_table
+      id="contract-templates-table"
+      rows={@streams.contract_templates}
+      columns={[
+        %{field: :id, label: "ID"},
+        %{field: :title, label: "Title"},
+        %{field: :inserted_at, label: "Created at", formatter: :datetime}
+      ]}
+      actions={[:show, :edit, :delete]}
+      resource_path="/contract_templates"
+      table_class="w-full border border-gray-300 rounded-lg shadow-sm overflow-hidden"
+      thead_class="bg-gradient-to-r from-indigo-500 to-indigo-600"
+      th_class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider"
+      tbody_class="bg-white divide-y divide-gray-200"
+      td_class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+      striped={true}
+      hoverable={true}
+      empty_message="No contract templates found. Create your first template!"
+    />
+
+    <.modal
+      :if={@live_action in [:new, :edit]}
+      id="contract_template-modal"
+      show
+      on_cancel={JS.patch(~p"/contract_templates")}
+      class="!w-[98vw] !h-[95vh] !m-2"
+    >
+      <div class="!p-0 !h-full !overflow-hidden">
+        <.live_component
+          module={FoedusWeb.ContractTemplateLive.FormComponent}
+          id={@contract_template.id || :new}
+          title={@page_title}
+          action={@live_action}
+          contract_template={@contract_template}
+          patch={~p"/contract_templates"}
+        />
+      </div>
+    </.modal>
+  </div>
+</div>

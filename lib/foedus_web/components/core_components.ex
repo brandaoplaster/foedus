@@ -37,6 +37,7 @@ defmodule FoedusWeb.CoreComponents do
 
   """
   attr :id, :string, required: true
+  attr :class, :string, default: nil
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
@@ -48,7 +49,7 @@ defmodule FoedusWeb.CoreComponents do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="relative z-50 hidden"
+      class={["relative z-50 hidden", @class]}
     >
       <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
@@ -60,13 +61,13 @@ defmodule FoedusWeb.CoreComponents do
         tabindex="0"
       >
         <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
+          <div class="w-full p-4 sm:p-6 lg:py-8">
             <.focus_wrap
               id={"#{@id}-container"}
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-7 shadow-lg ring-1 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -231,7 +232,7 @@ defmodule FoedusWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-l py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
@@ -554,6 +555,7 @@ defmodule FoedusWeb.CoreComponents do
       <.back navigate={~p"/posts"}>Back to posts</.back>
   """
   attr :navigate, :any, required: true
+  attr :class, :string, default: nil
   slot :inner_block, required: true
 
   def back(assigns) do
@@ -561,7 +563,7 @@ defmodule FoedusWeb.CoreComponents do
     <div class="mt-16">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class={["text-sm font-semibold leading-6 rounded-sm", @class]}
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         {render_slot(@inner_block)}
