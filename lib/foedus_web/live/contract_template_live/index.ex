@@ -1,9 +1,10 @@
 defmodule FoedusWeb.ContractTemplateLive.Index do
   use FoedusWeb, :live_view
 
+  import FoedusWeb.Components.UI.Table
+
   alias Foedus.Contracts
   alias Foedus.Contracts.ContractTemplate
-  import FoedusWeb.Ui.Table
 
   def mount(_params, _session, socket) do
     contract_templates = Contracts.list_contract_templates()
