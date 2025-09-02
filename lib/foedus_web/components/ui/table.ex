@@ -1,12 +1,11 @@
 defmodule FoedusWeb.Ui.Table do
   use Phoenix.Component
-  import FoedusWeb.CoreComponents
 
   @doc """
-  Renders a fully customizable data table
+  Renders a fully customizable data table with Stream support
   """
   attr :id, :string, required: true
-  attr :rows, :any, required: true
+  attr :rows, :any, required: true, doc: "Can be a list or a Phoenix.LiveView.Stream"
   attr :columns, :list, required: true
   attr :actions, :list, default: []
   attr :resource_path, :string, required: true
@@ -35,37 +34,39 @@ defmodule FoedusWeb.Ui.Table do
             </th>
           </tr>
         </thead>
-        <tbody class={@tbody_class}>
-          <%= if Enum.empty?(@rows) do %>
-            <tr>
+        <tbody class={@tbody_class} phx-update={get_update_type(@rows)} id={"#{@id}-tbody"}>
+          <%= if is_stream_empty?(@rows) do %>
+            <tr id={"#{@id}-empty-row"}>
               <td colspan={length(@columns) + if(@actions != [], do: 1, else: 0)} class="px-6 py-12 text-center text-sm text-gray-500">
                 <%= @empty_message %>
               </td>
             </tr>
           <% else %>
-            <tr
-              :for={{item, index} <- Enum.with_index(@rows)}
-              class={[
-                get_row_classes(@striped, @hoverable, index),
-                if(@row_click, do: "cursor-pointer", else: "")
-              ]}
-              {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", item.id}], else: []}
-            >
-              <td :for={column <- @columns} class={@td_class}>
-                <%= get_value(item, column) %>
-              </td>
-              <td :if={@actions != []} class={[@td_class, "text-right font-medium"]}>
-                <div class="flex justify-end space-x-4">
-                  <%= for action <- @actions do %>
-                    <%= render_action(%{
-                      item: item,
-                      resource_path: @resource_path,
-                      type: action
-                    }) %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
+            <%= for {dom_id, item} <- get_items(@rows), {_, index} <- Enum.with_index([{dom_id, item}]) do %>
+              <tr
+                id={dom_id}
+                class={[
+                  get_row_classes(@striped, @hoverable, index),
+                  if(@row_click, do: "cursor-pointer", else: "")
+                ]}
+                {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", get_item_id(item)}], else: []}
+              >
+                <td :for={column <- @columns} class={@td_class}>
+                  <%= get_value(item, column) %>
+                </td>
+                <td :if={@actions != []} class={[@td_class, "text-right font-medium"]}>
+                  <div class="flex justify-end space-x-4">
+                    <%= for action <- @actions do %>
+                      <%= render_action(%{
+                        item: item,
+                        resource_path: @resource_path,
+                        type: action
+                      }) %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -73,7 +74,7 @@ defmodule FoedusWeb.Ui.Table do
     """
   end
 
-  # Versão mais compacta da tabela
+  # Versão mais compacta da tabela com suporte a Stream
   attr :id, :string, required: true
   attr :rows, :any, required: true
   attr :columns, :list, required: true
@@ -97,38 +98,40 @@ defmodule FoedusWeb.Ui.Table do
             </th>
           </tr>
         </thead>
-        <tbody>
-          <%= if Enum.empty?(@rows) do %>
-            <tr>
+        <tbody phx-update={get_update_type(@rows)} id={"#{@id}-tbody"}>
+          <%= if is_stream_empty?(@rows) do %>
+            <tr id={"#{@id}-empty-row"}>
               <td colspan={length(@columns) + if(@actions != [], do: 1, else: 0)} class="border border-gray-300 px-4 py-8 text-center text-gray-500">
                 <%= @empty_message %>
               </td>
             </tr>
           <% else %>
-            <tr
-              :for={{item, index} <- Enum.with_index(@rows)}
-              class={[
-                "hover:bg-gray-50",
-                if(rem(index, 2) == 0, do: "bg-white", else: "bg-gray-25"),
-                if(@row_click, do: "cursor-pointer", else: "")
-              ]}
-              {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", item.id}], else: []}
-            >
-              <td :for={column <- @columns} class="border border-gray-300 px-4 py-2">
-                <%= get_value(item, column) %>
-              </td>
-              <td :if={@actions != []} class="border border-gray-300 px-4 py-2 text-center">
-                <div class="flex justify-center space-x-2">
-                  <%= for action <- @actions do %>
-                    <%= render_action(%{
-                      item: item,
-                      resource_path: @resource_path,
-                      type: action
-                    }) %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
+            <%= for {dom_id, item} <- get_items(@rows), {_, index} <- Enum.with_index([{dom_id, item}]) do %>
+              <tr
+                id={dom_id}
+                class={[
+                  "hover:bg-gray-50",
+                  if(rem(index, 2) == 0, do: "bg-white", else: "bg-gray-25"),
+                  if(@row_click, do: "cursor-pointer", else: "")
+                ]}
+                {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", get_item_id(item)}], else: []}
+              >
+                <td :for={column <- @columns} class="border border-gray-300 px-4 py-2">
+                  <%= get_value(item, column) %>
+                </td>
+                <td :if={@actions != []} class="border border-gray-300 px-4 py-2 text-center">
+                  <div class="flex justify-center space-x-2">
+                    <%= for action <- @actions do %>
+                      <%= render_action(%{
+                        item: item,
+                        resource_path: @resource_path,
+                        type: action
+                      }) %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -136,7 +139,7 @@ defmodule FoedusWeb.Ui.Table do
     """
   end
 
-  # Versão com cards para mobile
+  # Versão com cards para mobile com suporte a Stream
   attr :id, :string, required: true
   attr :rows, :any, required: true
   attr :columns, :list, required: true
@@ -155,45 +158,75 @@ defmodule FoedusWeb.Ui.Table do
       </div>
 
       <!-- Mobile Cards -->
-      <div class="md:hidden space-y-4">
-        <%= if Enum.empty?(@rows) do %>
-          <div class="text-center py-8 text-gray-500">
+      <div class="md:hidden space-y-4" phx-update={get_update_type(@rows)} id={"#{@id}-cards"}>
+        <%= if is_stream_empty?(@rows) do %>
+          <div id={"#{@id}-empty-cards"} class="text-center py-8 text-gray-500">
             <%= @empty_message %>
           </div>
         <% else %>
-          <div
-            :for={item <- @rows}
-            class={[
-              "bg-white shadow rounded-lg p-4 border border-gray-200",
-              if(@row_click, do: "cursor-pointer hover:shadow-md", else: "")
-            ]}
-            {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", item.id}], else: []}
-          >
-            <div class="space-y-2">
-              <div :for={column <- @columns} class="flex justify-between">
-                <span class="text-sm font-medium text-gray-500"><%= get_label(column) %>:</span>
-                <span class="text-sm text-gray-900"><%= get_value(item, column) %></span>
-              </div>
-              <div :if={@actions != []} class="pt-2 border-t border-gray-200">
-                <div class="flex justify-end space-x-3">
-                  <%= for action <- @actions do %>
-                    <%= render_action(%{
-                      item: item,
-                      resource_path: @resource_path,
-                      type: action
-                    }) %>
-                  <% end %>
+          <%= for {dom_id, item} <- get_items(@rows) do %>
+            <div
+              id={dom_id}
+              class={[
+                "bg-white shadow rounded-lg p-4 border border-gray-200",
+                if(@row_click, do: "cursor-pointer hover:shadow-md", else: "")
+              ]}
+              {if @row_click, do: [{"phx-click", @row_click}, {"phx-value-id", get_item_id(item)}], else: []}
+            >
+              <div class="space-y-2">
+                <div :for={column <- @columns} class="flex justify-between">
+                  <span class="text-sm font-medium text-gray-500"><%= get_label(column) %>:</span>
+                  <span class="text-sm text-gray-900"><%= get_value(item, column) %></span>
+                </div>
+                <div :if={@actions != []} class="pt-2 border-t border-gray-200">
+                  <div class="flex justify-end space-x-3">
+                    <%= for action <- @actions do %>
+                      <%= render_action(%{
+                        item: item,
+                        resource_path: @resource_path,
+                        type: action
+                      }) %>
+                    <% end %>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       </div>
     </div>
     """
   end
 
-  # Funções privadas (mantém as suas existentes)
+  # Novas funções para suporte a Stream (removida is_stream? que não estava sendo usada)
+
+  defp is_stream_empty?(%Phoenix.LiveView.LiveStream{inserts: inserts}) when map_size(inserts) == 0, do: true
+  defp is_stream_empty?(rows) when is_list(rows), do: Enum.empty?(rows)
+  defp is_stream_empty?(_), do: false
+
+  defp get_update_type(%Phoenix.LiveView.LiveStream{}), do: "stream"
+  defp get_update_type(_), do: "replace"
+
+  defp get_items(%Phoenix.LiveView.LiveStream{} = stream) do
+    # Para streams, retornamos as tuplas {dom_id, item} diretamente
+    stream
+  end
+
+  defp get_items(rows) when is_list(rows) do
+    # Para listas, criamos tuplas {dom_id, item} compatíveis
+    Enum.map(rows, fn item ->
+      dom_id = "#{get_item_id(item)}"
+      {dom_id, item}
+    end)
+  end
+
+  defp get_item_id(%{id: id}), do: id
+  defp get_item_id(item) when is_map(item) do
+    Map.get(item, :id) || Map.get(item, "id") || :erlang.phash2(item)
+  end
+  defp get_item_id(item), do: :erlang.phash2(item)
+
+  # Funções privadas existentes (mantém as suas existentes)
   defp get_value(item, column) when is_map(column) do
     field = Map.get(column, :field) || Map.get(column, "field")
     format_value(Map.get(item, field), Map.get(column, :formatter) || Map.get(column, "formatter"))
@@ -246,17 +279,17 @@ defmodule FoedusWeb.Ui.Table do
     ~H"""
     <%= case @type do %>
       <% :show -> %>
-        <.link navigate={"#{@resource_path}/#{@item.id}"} class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors duration-150">
+        <.link navigate={"#{@resource_path}/#{get_item_id(@item)}"} class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors duration-150">
           View
         </.link>
       <% :edit -> %>
-        <.link navigate={"#{@resource_path}/#{@item.id}/edit"} class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-150">
+        <.link navigate={"#{@resource_path}/#{get_item_id(@item)}/edit"} class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-150">
           Edit
         </.link>
       <% :delete -> %>
         <.link
           phx-click="delete"
-          phx-value-id={@item.id}
+          phx-value-id={get_item_id(@item)}
           data-confirm="Are you sure you want to delete this item?"
           class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-red-100 text-red-800 hover:bg-red-200 transition-colors duration-150"
         >
