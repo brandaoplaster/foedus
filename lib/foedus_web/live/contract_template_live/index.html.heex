@@ -19,11 +19,11 @@
 
     <.data_table
       id="contract-templates-table"
-      rows={@contract_templates}
+      rows={@streams.contract_templates}
       columns={[
         %{field: :id, label: "ID"},
         %{field: :title, label: "Title"},
-        %{field: :inserted_at, label: "Created at"}
+        %{field: :inserted_at, label: "Created at", formatter: :datetime}
       ]}
       actions={[:show, :edit, :delete]}
       resource_path="/contract_templates"
@@ -32,10 +32,13 @@
       th_class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider"
       tbody_class="bg-white divide-y divide-gray-200"
       td_class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+      striped={true}
+      hoverable={true}
+      empty_message="No contract templates found. Create your first template!"
     />
 
     <.modal
-      :if={@live_action == :new}
+      :if={@live_action in [:new, :edit]}
       id="contract_template-modal"
       show
       on_cancel={JS.patch(~p"/contract_templates")}
