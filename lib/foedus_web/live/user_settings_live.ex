@@ -5,18 +5,23 @@ defmodule FoedusWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
-      Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
-    </.header>
+    <div class="flex justify-center">
+      <div class="w-full max-w-lg bg-white shadow-lg rounded-2xl p-8 space-y-12">
+        <.header class="text-center mb-8">
+          <span class="block text-3xl font-bold text-gray-900">Account Settings</span>
+          <:subtitle>
+            <span class="text-sm text-gray-500">
+              Manage your account email address and password settings
+            </span>
+          </:subtitle>
+        </.header>
 
-    <div class="space-y-12 divide-y">
-      <div>
         <.simple_form
           for={@email_form}
           id="email_form"
           phx-submit="update_email"
           phx-change="validate_email"
+          class="space-y-6"
         >
           <.input field={@email_form[:email]} type="email" label="Email" required />
           <.input
@@ -29,11 +34,15 @@ defmodule FoedusWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <.button
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg w-full"
+              phx-disable-with="Changing..."
+            >
+              Change Email
+            </.button>
           </:actions>
         </.simple_form>
-      </div>
-      <div>
+
         <.simple_form
           for={@password_form}
           id="password_form"
@@ -42,6 +51,7 @@ defmodule FoedusWeb.UserSettingsLive do
           phx-change="validate_password"
           phx-submit="update_password"
           phx-trigger-action={@trigger_submit}
+          class="space-y-6"
         >
           <input
             name={@password_form[:email].name}
@@ -65,7 +75,12 @@ defmodule FoedusWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.button
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg w-full"
+              phx-disable-with="Changing..."
+            >
+              Change Password
+            </.button>
           </:actions>
         </.simple_form>
       </div>
