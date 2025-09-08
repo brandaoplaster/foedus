@@ -5,24 +5,39 @@ defmodule FoedusWeb.UserForgotPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Forgot your password?
-        <:subtitle>We'll send a password reset link to your inbox</:subtitle>
-      </.header>
+    <div class="flex justify-center">
+      <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
+        <.header class="text-center mb-8">
+          <span class="block text-3xl font-bold text-gray-900">Forgot your password?</span>
+          <:subtitle>
+            <span class="text-sm text-gray-500">
+              We'll send a password reset link to your inbox
+            </span>
+          </:subtitle>
+        </.header>
 
-      <.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
-        <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
-            Send password reset instructions
-          </.button>
-        </:actions>
-      </.simple_form>
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
+        <.simple_form for={@form} id="reset_password_form" phx-submit="send_email" class="space-y-6">
+          <.input field={@form[:email]} type="email" placeholder="Email" required />
+          <:actions>
+            <.button
+              phx-disable-with="Sending..."
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+            >
+              Send password reset instructions
+            </.button>
+          </:actions>
+        </.simple_form>
+
+        <p class="text-center text-sm mt-6 text-gray-600">
+          <.link href={~p"/users/register"} class="font-semibold text-indigo-600 hover:underline">
+            Register
+          </.link>
+          <span class="mx-2">|</span>
+          <.link href={~p"/users/log_in"} class="font-semibold text-indigo-600 hover:underline">
+            Log in
+          </.link>
+        </p>
+      </div>
     </div>
     """
   end
