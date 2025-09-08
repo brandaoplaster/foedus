@@ -13,21 +13,6 @@ defmodule FoedusWeb.Router do
     plug :fetch_current_user
   end
 
-  # pipeline :api do
-  #   plug :accepts, ["json"]
-  # end
-
-  # scope "/", FoedusWeb do
-  #   pipe_through :browser
-
-  #   # get "/", PageController, :home
-  # end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", FoedusWeb do
-  #   pipe_through :api
-  # end
-
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:foedus, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -45,12 +30,6 @@ defmodule FoedusWeb.Router do
     end
   end
 
-  scope "/", FoedusWeb do
-    pipe_through :browser
-
-    live "/", HomeLive.Index, :index
-  end
-
   ## Authentication routes
 
   scope "/", FoedusWeb do
@@ -58,6 +37,7 @@ defmodule FoedusWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{FoedusWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/", HomeLive.Index, :index
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -66,7 +46,6 @@ defmodule FoedusWeb.Router do
 
     post "/users/log_in", UserSessionController, :create
 
-    # live "/", HomeLive.Index, :index
   end
 
   scope "/", FoedusWeb do
@@ -78,12 +57,12 @@ defmodule FoedusWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/dashboard", DashboardLive.Index
-       live "/contract_templates", ContractTemplateLive.Index, :index
-    live "/contract_templates/new", ContractTemplateLive.Index, :new
-    live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
+      live "/contract_templates", ContractTemplateLive.Index, :index
+      live "/contract_templates/new", ContractTemplateLive.Index, :new
+      live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
 
-    live "/contract_templates/:id", ContractTemplateLive.Show, :show
-    live "/contract_templates/:id/show/edit", ContractTemplateLive.Show, :edit
+      live "/contract_templates/:id", ContractTemplateLive.Show, :show
+      live "/contract_templates/:id/show/edit", ContractTemplateLive.Show, :edit
     end
   end
 
