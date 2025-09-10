@@ -1,0 +1,49 @@
+<div class="min-h-screen p-2 bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <.header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Contractors</h1>
+      <:subtitle>
+        <p class="mt-2 text-lg text-gray-600">Manage your contractors here.</p>
+      </:subtitle>
+    </.header>
+
+    <.data_table
+      id="contractors-table"
+      rows={@streams.contractors}
+      columns={[
+        %{field: :id, label: "ID"},
+        %{field: :trade_name, label: "Title"},
+        %{field: :inserted_at, label: "Created at", formatter: :datetime}
+      ]}
+      actions={[:show, :edit, :delete]}
+      resource_path="/contractors"
+      table_class="w-full border border-gray-300 rounded-lg shadow-sm overflow-hidden"
+      thead_class="bg-gradient-to-r from-indigo-500 to-indigo-600"
+      th_class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider"
+      tbody_class="bg-white divide-y divide-gray-200"
+      td_class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+      striped={true}
+      hoverable={true}
+      empty_message="No contractors found. Create your first template!"
+    />
+
+    <.modal
+      :if={@live_action in [:edit]}
+      id="contractors-modal"
+      show
+      on_cancel={JS.patch(~p"/contractors")}
+      class="!w-[98vw] !h-[95vh] !m-2"
+    >
+      <div class="!p-0 !h-full !overflow-hidden">
+        <.live_component
+          module={FoedusWeb.ContractTemplateLive.FormComponent}
+          id={@contractors.id || :new}
+          title={@page_title}
+          action={@live_action}
+          contractor={@contractors}
+          patch={~p"/contractors"}
+        />
+      </div>
+    </.modal>
+  </div>
+</div>
