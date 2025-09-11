@@ -36,11 +36,11 @@
     >
       <div class="!p-0 !h-full !overflow-hidden">
         <.live_component
-          module={FoedusWeb.ContractTemplateLive.FormComponent}
-          id={@contractors.id || :new}
+          module={FoedusWeb.ContractorsLive.FormComponent}
+          id={@contractor.id || :edit}
           title={@page_title}
           action={@live_action}
-          contractor={@contractors}
+          contractor={@contractor}
           patch={~p"/contractors"}
         />
       </div>
