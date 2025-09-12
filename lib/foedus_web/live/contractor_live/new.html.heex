@@ -1,0 +1,10 @@
+<div>
+  <.live_component
+    module={FoedusWeb.ContractorsLive.FormComponent}
+    id={@contractor.id || :edit}
+    title={@page_title}
+    action={@live_action}
+    contractor={@contractor}
+    patch={~p"/contractors"}
+  />
+</div>

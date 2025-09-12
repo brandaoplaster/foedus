@@ -1,0 +1,26 @@
+defmodule FoedusWeb.ContractorLive.New do
+  use FoedusWeb, :live_view
+
+  alias Foedus.Contractors
+  alias Foedus.Contractors.Contractor
+
+  @impl true
+  def mount(_params, _session, socket) do
+    contractor = %Contractors.Contractor{}
+
+    {:ok,
+     socket
+     |> assign(:contractor, contractor)
+     |> assign(:live_action, :new)}
+  end
+
+   def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :new, _params) do
+    socket
+    |> assign(:page_title, "New Contractor")
+    |> assign(:contractor, %Contractor{})
+  end
+end
