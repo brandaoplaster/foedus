@@ -45,7 +45,6 @@ defmodule FoedusWeb.Router do
     end
 
     post "/users/log_in", UserSessionController, :create
-
   end
 
   scope "/", FoedusWeb do
@@ -57,6 +56,9 @@ defmodule FoedusWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/dashboard", DashboardLive.Index
+      live "/contractors", ContractorLive.Index, :index
+      live "/contractors/:id/edit", ContractorLive.Index, :edit
+
       live "/contract_templates", ContractTemplateLive.Index, :index
       live "/contract_templates/new", ContractTemplateLive.Index, :new
       live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
@@ -70,6 +72,8 @@ defmodule FoedusWeb.Router do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
+
+    live "/contract", ContractorLive.New, :new
 
     live_session :current_user,
       on_mount: [{FoedusWeb.UserAuth, :mount_current_user}] do
