@@ -3,49 +3,56 @@ services:
     image: postgres:13
     container_name: foedus_postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-foedus_dev}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT}:5432"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - foedus_network
 
   app:
-    build: 
+    build:
       context: .
-      args:
-        USER_ID: ${USER_ID:-1000}
-        GROUP_ID: ${GROUP_ID:-1000}
+      target: development
     container_name: foedus_app
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-ecto://postgres:postgres@db:5432/foedus_dev}
-      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your_secret_key_base_here}
-      PHX_HOST: ${PHX_HOST:-localhost}
-      PHX_PORT: ${PHX_PORT:-4000}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-foedus_dev}
+      MIX_ENV: dev
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      PHX_HOST: ${PHX_HOST}
     ports:
-      - "${PHX_PORT:-4000}:4000"
+      - "${PHX_PORT}:4000"
     volumes:
       - .:/app
+      - /app/deps
+      - /app/_build
       - deps_cache:/app/deps
       - build_cache:/app/_build
     restart: unless-stopped
-    command: mix phx.server
+    networks:
+      - foedus_network
+    stdin_open: true
+    tty: true
+    command: ["/app/scripts/dev-start.sh"]
+
+networks:
+  foedus_network:
+    driver: bridge
 
 volumes:
   postgres_data:
-  deps_cache: 
+  deps_cache:
   build_cache:
