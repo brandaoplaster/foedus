@@ -1,112 +1,120 @@
 defmodule FoedusWeb.ContractorsLive.FormComponent do
   use FoedusWeb, :live_component
-  alias Foedus.Contractors
+
   import FoedusWeb.Components.UI.WizardForms
 
-  @impl true
+  alias Foedus.Contractors
+  alias FoedusWeb.ContractorLive.{
+    AddressComponent,
+    CompanyInfoComponent,
+    PersonalInfoComponent,
+    RepresentativesComponent
+  }
+
   def render(assigns) do
     ~H"""
-    <div >
+    <div>
       <.wizard_forms
         current_step={@current_step}
-        total_steps={5}
+        steps={@steps}
         completed_steps={@completed_steps}
         form={@form}
         form_data={@form_data}
         target={@myself}
+        title={@title}
+        subtitle={@subtitle}
+        class="max-w-4xl"
       />
     </div>
     """
   end
 
-  @impl true
-  def update(%{contractor: contractor} = assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(Contractors.change_contractor(contractor))
-     end)
-     |> assign_new(:current_step, fn -> 1 end)
-     |> assign_new(:completed_steps, fn -> [] end)
-     |> assign_new(:form_data, fn -> %{} end)}
-  end
+  def mount(socket) do
+    steps = [
+      %{
+        number: 1,
+        title: "Personal Info",
+        component: PersonalInfoComponent,
+        id: "personal_info",
+        type: :form
+      },
+      %{
+        number: 2,
+        title: "Company Info",
+        component: CompanyInfoComponent,
+        id: "company_info",
+        type: :form
+      },
+      %{number: 3, title: "Address", component: AddressComponent, id: "address", type: :form},
+      %{
+        number: 4,
+        title: "Representatives",
+        component: RepresentativesComponent,
+        id: "Representatives",
+        type: :form
+      },
+      %{number: 5, title: "Review", component: nil, id: "review", type: :review}
+    ]
 
-  @impl true
-  def handle_event("validate_step", %{"contractor" => contractor_params}, socket) do
-    changeset = Contractors.change_contractor(socket.assigns.contractor, contractor_params)
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    socket =
+      socket
+      |> assign(:current_step, 1)
+      |> assign(:steps, steps)
+      |> assign(:completed_steps, [])
+      |> assign(:form_data, %{})
+      |> assign(:title, "Registration Wizard")
+      |> assign(:subtitle, "Complete all steps to register")
+
+    {:ok, socket}
   end
 
   def handle_event("next_step", _params, socket) do
-    current = socket.assigns.current_step
-    completed = socket.assigns.completed_steps
-    new_completed = if current not in completed, do: [current | completed], else: completed
+    current_step = socket.assigns.current_step
+    total_steps = length(socket.assigns.steps)
 
-    {:noreply,
-     socket
-     |> assign(current_step: min(current + 1, 5))
-     |> assign(completed_steps: new_completed)}
+    if current_step < total_steps do
+      completed_steps = [current_step | socket.assigns.completed_steps] |> Enum.uniq()
+
+      socket =
+        socket
+        |> assign(:current_step, current_step + 1)
+        |> assign(:completed_steps, completed_steps)
+
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_event("previous_step", _params, socket) do
-    current = socket.assigns.current_step
-    {:noreply, assign(socket, current_step: max(current - 1, 1))}
-  end
+    current_step = socket.assigns.current_step
 
-  def handle_event("save_step", %{"contractor" => contractor_params}, socket) do
-    # Se está na última etapa, salva definitivamente
-    if socket.assigns.current_step == 5 do
-      save_contractor(socket, socket.assigns.action, contractor_params)
+    if current_step > 1 do
+      socket = assign(socket, :current_step, current_step - 1)
+      {:noreply, socket}
     else
-      # Apenas valida e vai para próxima etapa
-      changeset = Contractors.change_contractor(socket.assigns.contractor, contractor_params)
-
-      if changeset.valid? do
-        current = socket.assigns.current_step
-        completed = socket.assigns.completed_steps
-        new_completed = if current not in completed, do: [current | completed], else: completed
-
-        {:noreply,
-         socket
-         |> assign(current_step: min(current + 1, 5))
-         |> assign(completed_steps: new_completed)
-         |> assign(form: to_form(changeset))}
-      else
-        {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
-      end
+      {:noreply, socket}
     end
   end
 
-  defp save_contractor(socket, :edit, contractor_params) do
-    case Contractors.update_contractor(socket.assigns.contractor, contractor_params) do
-      {:ok, contractor} ->
-        notify_parent({:saved, contractor})
+  def handle_event("validate", form_params, socket) do
+    socket =
+      socket
+      |> assign(:form_data, Map.merge(socket.assigns.form_data, form_params))
 
+    {:noreply, socket}
+  end
+
+  def handle_event("save", %{"form_data" => form_params}, socket) do
+    case Contractors.create_contractor(form_params) do
+      {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Contractor updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> put_flash(:info, "Registration completed successfully!")
+         |> push_navigate(to: ~p"/contract")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
-
-  defp save_contractor(socket, :new, contractor_params) do
-    case Contractors.create_contractor(contractor_params) do
-      {:ok, contractor} ->
-        notify_parent({:saved, contractor})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Contractor created successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
-    end
-  end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end
