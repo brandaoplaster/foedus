@@ -9,14 +9,17 @@ defmodule FoedusWeb.ContractorLive.Index do
   def mount(_params, _session, socket) do
     contractors = Contractors.list_contractors()
 
+    changeset = Contractor.changeset(%Contractor{}, %{})
+
     socket =
       socket
+      |> assign(:form, to_form(changeset))
       |> stream(:contractors, contractors)
 
     {:ok, socket}
   end
 
- def handle_params(params, _url, socket) do
+  def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
@@ -38,7 +41,7 @@ defmodule FoedusWeb.ContractorLive.Index do
     |> assign(:contractor, nil)
   end
 
-   def handle_info({:contract_template_created, contractor}, socket) do
+  def handle_info({:contract_template_created, contractor}, socket) do
     socket = stream_insert(socket, :contractor, contractor, at: 0)
     {:noreply, socket}
   end
