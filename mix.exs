@@ -24,7 +24,8 @@ defmodule Foedus.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/mix"]
+  defp elixirc_paths(:dev), do: ["lib", "test/support", "test/mix"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -60,8 +61,8 @@ defmodule Foedus.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_machina, "~> 2.8.0", only: :test},
-      {:faker, "~> 0.18", only: :test}
+      {:ex_machina, "~> 2.8.0",  only: [:dev, :test]},
+      {:faker, "~> 0.18", only: [:dev, :test]}
     ]
   end
 
