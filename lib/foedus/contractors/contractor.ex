@@ -28,6 +28,7 @@ defmodule Foedus.Contractors.Contractor do
     field :email, :string
     field :phone, :string
     field :website, :string
+    field :status, Ecto.Enum, values: [:active, :inactive, :draft], default: :draft
 
     field :notes, :string
 
