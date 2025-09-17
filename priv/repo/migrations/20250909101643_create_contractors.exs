@@ -8,7 +8,7 @@ defmodule Foedus.Repo.Migrations.CreateContractors do
       add :entity_type, :integer, default: 0, null: false
 
       add :full_name, :string
-      add :cpf, :string
+      add :document, :string
       add :birth_date, :date
       add :nationality, :string
 
@@ -17,31 +17,11 @@ defmodule Foedus.Repo.Migrations.CreateContractors do
       add :cnpj, :string
       add :company_type, :string
 
-      add :legal_representative_first_name, :string
-      add :legal_representative_last_name, :string
-      add :legal_representative_cpf, :string
-      add :legal_representative_birth_date, :date
-      add :legal_representative_email, :string
-
-      add :authorized_representative_first_name, :string
-      add :authorized_representative_last_name, :string
-      add :authorized_representative_cpf, :string
-      add :authorized_representative_birth_date, :date
-      add :authorized_representative_email, :string
-
       add :email, :string
       add :phone, :string
       add :mobile_phone, :string
       add :website, :string
-
-      add :address_street, :string
-      add :address_number, :string
-      add :address_complement, :string
-      add :address_neighborhood, :string
-      add :address_city, :string
-      add :address_state, :string
-      add :address_zipcode, :string
-      add :address_country, :string, default: "Brasil"
+      add :status, :integer, default: 0, null: false
 
       add :notes, :text
 
@@ -49,7 +29,7 @@ defmodule Foedus.Repo.Migrations.CreateContractors do
     end
 
     create index(:contractors, [:entity_type])
-    create index(:contractors, [:cpf])
+    create index(:contractors, [:document])
     create index(:contractors, [:cnpj])
     create index(:contractors, [:email])
   end
