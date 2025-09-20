@@ -12,7 +12,10 @@ defmodule Foedus.Contractors.Address do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "addresses" do
-    field :address_type, Ecto.Enum, values: [:residential, :commercial, :billing]
+    field :address_type, Ecto.Enum,
+      values: [residential: 0, commercial: 1, billing: 3],
+      default: :residential
+
     field :street, :string
     field :number, :string
     field :complement, :string
