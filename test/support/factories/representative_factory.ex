@@ -12,7 +12,6 @@ defmodule Foedus.RepresentativeFactory do
           birth_date: Faker.Date.date_of_birth(18..80),
           email: Faker.Internet.email(),
           phone: Faker.format("(##) #####-####"),
-          contractor: Enum.random([:individual_contractor, :company_contractor]) |> build()
         }
       end
     end

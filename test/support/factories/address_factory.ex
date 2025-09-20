@@ -14,7 +14,6 @@ defmodule Foedus.AddressFactory do
           state: Faker.Address.state(),
           zipcode: Faker.Address.zip_code(),
           country: Faker.Address.country(),
-          contractor: Enum.random([:individual_contractor, :company_contractor]) |> build()
         }
       end
     end
