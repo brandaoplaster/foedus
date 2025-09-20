@@ -4,4 +4,6 @@ defmodule Foedus.Factory do
   use Foedus.UserFactory
   use Foedus.ContractTemplateFactory
   use Foedus.ContractorFactory
+  use Foedus.RepresentativeFactory
+  use Foedus.AddressFactory
 end

@@ -115,6 +115,29 @@ docker compose run --rm app mix ecto.migrate
 docker compose run --rm app mix ecto.rollback
 ```
 
+### Code Quality & Linting
+
+```bash
+# Run Credo for code analysis
+docker compose run --rm app mix credo
+
+# Run Credo with strict mode (more detailed analysis)
+docker compose run --rm app mix credo --strict
+```
+
+### Database Priming
+
+```bash
+# Run default
+docker compose run --rm app mix db.prime
+
+# Clean database
+docker compose run --rm app mix db.prime --clean
+
+# Run prime with flags
+docker compose run --rm app mix db.prime --users 5 --contractors 3 --templates 2
+```
+
 ### Generating Phoenix Resources
 
 ```bash
