@@ -13,7 +13,9 @@ defmodule Foedus.Contractors.Contractor do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "contractors" do
-    field :entity_type, Ecto.Enum, values: [:company, :individual], default: :company
+    field :entity_type, Ecto.Enum, values: [company: 0, individual: 1], default: :company
+
+    field :status, Ecto.Enum, values: [active: 0, inactive: 1, draft: 2], default: :draft
 
     field :full_name, :string
     field :document, :string
@@ -28,7 +30,6 @@ defmodule Foedus.Contractors.Contractor do
     field :email, :string
     field :phone, :string
     field :website, :string
-    field :status, Ecto.Enum, values: [:active, :inactive, :draft], default: :draft
 
     field :notes, :string
 
