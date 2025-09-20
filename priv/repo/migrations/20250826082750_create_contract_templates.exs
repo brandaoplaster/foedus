@@ -12,6 +12,6 @@ defmodule Foedus.Repo.Migrations.CreateContractTemplates do
     end
 
     create index(:contract_templates, [:title])
-    create_index(:contract_templates, [:user_id])
+    create index(:contract_templates, [:user_id])
   end
 end

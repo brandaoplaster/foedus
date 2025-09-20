@@ -16,7 +16,7 @@ defmodule Foedus.Repo.Migrations.CreateAddresses do
 
       add :contractor_id, references(:contractors, type: :binary_id, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:addresses, [:contractor_id])

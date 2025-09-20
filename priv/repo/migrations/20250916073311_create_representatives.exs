@@ -14,7 +14,7 @@ defmodule Foedus.Repo.Migrations.CreateRepresentatives do
 
       add :contractor_id, references(:contractors, type: :binary_id, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:representatives, [:contractor_id])

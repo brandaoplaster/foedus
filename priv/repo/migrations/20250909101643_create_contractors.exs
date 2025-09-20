@@ -25,7 +25,7 @@ defmodule Foedus.Repo.Migrations.CreateContractors do
 
       add :notes, :text
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:contractors, [:entity_type])
