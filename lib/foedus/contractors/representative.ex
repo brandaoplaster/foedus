@@ -9,7 +9,7 @@ defmodule Foedus.Contractors.Representative do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "representatives" do
-    field :role, Ecto.Enum, values: [:legal, :autorizado]
+    field :role, Ecto.Enum, values: [legal: 0, autorizado: 1, other: 3], default: :legal
     field :first_name, :string
     field :last_name, :string
     field :document, :string
