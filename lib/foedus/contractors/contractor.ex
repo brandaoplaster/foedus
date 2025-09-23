@@ -33,8 +33,8 @@ defmodule Foedus.Contractors.Contractor do
 
     field :notes, :string
 
-    has_many :addresses, Address
-    has_many :representatives, Representative
+    has_many :addresses, Address, on_replace: :delete, on_delete: :delete_all
+    has_many :representatives, Representative, on_replace: :delete, on_delete: :delete_all
 
     timestamps(type: :utc_datetime)
   end
