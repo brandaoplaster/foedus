@@ -23,6 +23,15 @@ defmodule FoedusWeb.ContractorLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  def handle_event("delete", %{"id" => id}, socket) do
+    contractor = Contractors.get_contractor!(id)
+    {:ok, _} = Contractors.delete_contractor(contractor)
+
+    socket = stream_delete(socket, :contractors, contractor)
+
+    {:noreply, put_flash(socket, :info, "Contractor deleted successfully")}
+  end
+
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Contractor")
