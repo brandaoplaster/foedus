@@ -50,8 +50,8 @@ defmodule FoedusWeb.Layouts do
     <%= if @current_user do %>
       <nav class="hidden md:flex items-center space-x-8">
         <.nav_link navigate={~p"/dashboard"}>Dashboard</.nav_link>
-        <.nav_link navigate={~p"/contract_templates"}>Templates</.nav_link>
-        <.nav_link href="#">Contratos</.nav_link>
+        <.nav_link navigate={~p"/contract_templates"}>Contract Templates</.nav_link>
+        <.nav_link navigate={~p"/contractors"}>Contractors</.nav_link>
         <.nav_link href="#">Relatórios</.nav_link>
       </nav>
     <% end %>
