@@ -58,13 +58,13 @@ defmodule FoedusWeb.Router do
       live "/dashboard", DashboardLive.Index
       live "/contractors", ContractorLive.Index, :index
       live "/contractors/:id/edit", ContractorLive.Index, :edit
+      live "/contractors/:id", ContractorLive.Show, :show
 
       live "/contract_templates", ContractTemplateLive.Index, :index
       live "/contract_templates/new", ContractTemplateLive.Index, :new
       live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
 
       live "/contract_templates/:id", ContractTemplateLive.Show, :show
-      live "/contract_templates/:id/show/edit", ContractTemplateLive.Show, :edit
     end
   end
 
