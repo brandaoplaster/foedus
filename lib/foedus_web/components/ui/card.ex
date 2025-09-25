@@ -4,28 +4,46 @@ defmodule FoedusWeb.Components.UI.Card do
   import FoedusWeb.Components.UI.Icon
 
   attr :class, :string, default: ""
+  attr :title, :string, default: nil
+  attr :icon, :string, default: nil
+  attr :icon_color, :string, default: "gray"
+
   slot :header
   slot :inner_block, required: true
 
-   def card(assigns) do
+  def card(assigns) do
     ~H"""
-    <div class={"bg-white shadow-sm rounded-lg border border-gray-200 #{@class}"}>
-      <%= if @header != [] do %>
-        <div class="px-6 py-5 border-b border-gray-200">
-          <%= render_slot(@header) %>
-        </div>
+    <div class={["bg-white shadow-sm rounded-lg border border-gray-200", @class]}>
+      <%= cond do %>
+        <% @header != [] -> %>
+          <div class="px-6 py-5 border-b border-gray-200">
+            {render_slot(@header)}
+          </div>
+        <% @title -> %>
+          <div class="px-6 py-5 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+              <%= if @icon do %>
+                <div class={["rounded-lg p-2", icon_bg_class(@icon_color)]}>
+                  <.icon name={@icon} class={["w-5 h-5", icon_text_class(@icon_color)]} />
+                </div>
+              <% end %>
+              <h3 class="text-lg font-semibold text-gray-900">{@title}</h3>
+            </div>
+          </div>
+        <% true -> %>
       <% end %>
-      <%= render_slot(@inner_block) %>
+
+      {render_slot(@inner_block)}
     </div>
     """
   end
 
-    attr :title, :string, required: true
+  attr :title, :string, required: true
   attr :value, :any, required: true
   attr :icon, :string, required: true
   attr :color, :string, default: "blue"
 
-   def stat_card(assigns) do
+  def stat_card(assigns) do
     ~H"""
     <.card class="hover:shadow-md transition-shadow">
       <div class="p-6">
@@ -37,10 +55,10 @@ defmodule FoedusWeb.Components.UI.Card do
           </div>
           <div class="ml-4">
             <div class="text-sm font-medium text-gray-600">
-              <%= @title %>
+              {@title}
             </div>
             <div class="text-2xl font-bold text-gray-900">
-              <%= @value %>
+              {@value}
             </div>
           </div>
         </div>
@@ -48,4 +66,28 @@ defmodule FoedusWeb.Components.UI.Card do
     </.card>
     """
   end
+
+  defp icon_bg_class("blue"), do: "bg-blue-50"
+  defp icon_bg_class("green"), do: "bg-green-50"
+  defp icon_bg_class("purple"), do: "bg-purple-50"
+  defp icon_bg_class("red"), do: "bg-red-50"
+  defp icon_bg_class("yellow"), do: "bg-yellow-50"
+  defp icon_bg_class("indigo"), do: "bg-indigo-50"
+  defp icon_bg_class(_), do: "bg-gray-50"
+
+  defp icon_text_class("blue"), do: "text-blue-600"
+  defp icon_text_class("green"), do: "text-green-600"
+  defp icon_text_class("purple"), do: "text-purple-600"
+  defp icon_text_class("red"), do: "text-red-600"
+  defp icon_text_class("yellow"), do: "text-yellow-600"
+  defp icon_text_class("indigo"), do: "text-indigo-600"
+  defp icon_text_class(_), do: "text-gray-600"
+
+  defp stat_bg_class("blue"), do: "bg-blue-500"
+  defp stat_bg_class("green"), do: "bg-green-500"
+  defp stat_bg_class("purple"), do: "bg-purple-500"
+  defp stat_bg_class("red"), do: "bg-red-500"
+  defp stat_bg_class("yellow"), do: "bg-yellow-500"
+  defp stat_bg_class("indigo"), do: "bg-indigo-500"
+  defp stat_bg_class(_), do: "bg-gray-500"
 end
