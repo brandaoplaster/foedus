@@ -109,7 +109,7 @@ defmodule FoedusWeb.DashboardLive.Index do
         id: 1,
         client: "ABC Company Ltd",
         template: "Development Contract",
-        status: "pending_approval",
+        status: :pending_approval,
         value: "$15,000.00",
         created_at: "2025-08-20"
       },
@@ -117,7 +117,7 @@ defmodule FoedusWeb.DashboardLive.Index do
         id: 2,
         client: "XYZ Consulting",
         template: "Service Agreement",
-        status: "under_review",
+        status: :under_review,
         value: "$8,500.00",
         created_at: "2025-08-19"
       },
@@ -125,7 +125,7 @@ defmodule FoedusWeb.DashboardLive.Index do
         id: 3,
         client: "Tech Start",
         template: "Support Contract",
-        status: "awaiting_signature",
+        status: :awaiting_signature,
         value: "$3,200.00",
         created_at: "2025-08-18"
       }

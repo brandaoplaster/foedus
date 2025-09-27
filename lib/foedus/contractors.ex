@@ -37,6 +37,12 @@ defmodule Foedus.Contractors do
   """
   def get_contractor!(id), do: Repo.get!(Contractor, id)
 
+  def get_contractor_with_associations!(id) do
+    Contractor
+    |> Repo.get!(id)
+    |> Repo.preload([:addresses, :representatives])
+  end
+
   @doc """
   Creates a contractor.
 
