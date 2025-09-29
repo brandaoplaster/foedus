@@ -1,4 +1,4 @@
-defmodule FoedusWeb.Ui.MetadataCard do
+defmodule FoedusWeb.Components.UI.MetadataCard do
   use Phoenix.Component
 
   @doc """
