@@ -71,7 +71,7 @@ defmodule FoedusWeb.Components.UI.Button do
     ~H"""
     <button class={@button_class} {@rest}>
       <%= if @icon do %>
-        <Icon.icon name={@icon} class="w-4 h-4" />
+        <%!-- <Icon.icon name={@icon} class="w-4 h-4" /> --%>
       <% end %>
       {render_slot(@inner_block)}
     </button>
