@@ -1,8 +1,17 @@
 defmodule FoedusWeb.ContractorLive.Show do
   use FoedusWeb, :live_view
 
+  import FoedusWeb.Components.UI.{
+    Breadcrumb,
+    MetadataCard,
+    Card,
+    ShowHeader,
+    ContractorInfo,
+    RepresentativesList,
+    AddressesList
+  }
+
   alias Foedus.Contractors
-  import FoedusWeb.Ui.Breadcrumb
 
   @impl true
   def mount(_params, _session, socket) do
@@ -19,4 +28,7 @@ defmodule FoedusWeb.ContractorLive.Show do
 
   defp page_title(:show), do: "Show Contractor"
   defp page_title(:edit), do: "Edit Contractor"
+
+  defp information_section_title(%{entity_type: :company}), do: "Company Information"
+  defp information_section_title(_contractor), do: "Personal Information"
 end
