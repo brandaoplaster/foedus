@@ -1,0 +1,114 @@
+<div class="min-h-screen p-2 bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <.breadcrumb>
+      <.breadcrumb_link navigate={~p"/contractors"}>
+        Contractors
+      </.breadcrumb_link>
+      <.breadcrumb_separator />
+      <.breadcrumb_current>
+        {@contractor.full_name || @contractor.company_name}
+      </.breadcrumb_current>
+    </.breadcrumb>
+
+    <.show_header
+      title={@contractor.full_name || @contractor.company_name}
+      subtitle={"ID: #{@contractor.id}"}
+      description={
+        if @contractor.entity_type == :company,
+          do: "Company contractor details and management",
+          else: "Individual contractor profile and information"
+      }
+      icon="hero-user"
+      back_url={~p"/contractors"}
+      edit_url={~p"/contractors/#{@contractor}/edit"}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <.card
+          icon="zap"
+          icon_color="red"
+          class="w-full"
+        >
+          <.contractor_information contractor={@contractor} />
+        </.card>
+
+        <.representatives_list representatives={@contractor.representatives} />
+
+        <.addresses_list
+          addresses={@contractor.addresses}
+          title="Addresses"
+        />
+      </div>
+
+      <div class="space-y-6">
+        <.card title="Details" icon="zap" icon_color="purple" class="w-full">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="p-6 space-y-6">
+              <div>
+                <label class="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                  Entity Type
+                </label>
+                <p class="mt-2 text-gray-900 font-medium">
+                  {String.capitalize(Atom.to_string(@contractor.entity_type))}
+                </p>
+              </div>
+
+              <div>
+                <label class="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                  Status
+                </label>
+                <div class="mt-2">
+                  <FoedusWeb.Components.UI.Badge.status_badge
+                    size={:lg}
+                    status={@contractor.status}
+                  >
+                  </FoedusWeb.Components.UI.Badge.status_badge>
+                </div>
+              </div>
+
+              <.metadata_card>
+                <.date_info_item
+                  icon="plus"
+                  title="Created"
+                  date={@contractor.inserted_at}
+                  color="green"
+                />
+                <.date_info_item
+                  icon="refresh"
+                  title="Last Updated"
+                  date={@contractor.updated_at}
+                  color="blue"
+                />
+              </.metadata_card>
+            </div>
+          </div>
+        </.card>
+
+        <.card title="Quick Actions" icon="zap" icon_color="purple" class="w-full">
+          <div class="p-6 space-y-3">
+            <FoedusWeb.Components.UI.Button.button
+              variant="soft_green"
+              size="lg"
+              icon="document"
+              full_width={true}
+              phx-click="export_data"
+            >
+              Generate Contract
+            </FoedusWeb.Components.UI.Button.button>
+
+            <FoedusWeb.Components.UI.Button.button
+              variant="soft_red"
+              class="w-full"
+              full_width={true}
+              icon="alert"
+              phx-click="refresh_stats"
+            >
+              Cancel Contract
+            </FoedusWeb.Components.UI.Button.button>
+          </div>
+        </.card>
+      </div>
+    </div>
+  </div>
+</div>

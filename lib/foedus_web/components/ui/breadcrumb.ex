@@ -1,4 +1,4 @@
-defmodule FoedusWeb.Ui.Breadcrumb do
+defmodule FoedusWeb.Components.UI.Breadcrumb do
   @moduledoc """
   Breadcrumb component for navigation hierarchy display.
 
