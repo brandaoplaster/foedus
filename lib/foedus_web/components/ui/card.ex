@@ -50,7 +50,7 @@ defmodule FoedusWeb.Components.UI.Card do
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class={"w-10 h-10 bg-#{@color}-500 rounded-lg flex items-center justify-center"}>
-              <.icon name={@icon} class="w-6 h-6 text-white" />
+              <%!-- <.icon name={@icon} class="w-6 h-6 text-white" /> --%>
             </div>
           </div>
           <div class="ml-4">
