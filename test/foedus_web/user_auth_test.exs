@@ -200,7 +200,7 @@ defmodule FoedusWeb.UserAuthTest do
     end
 
     test "doesn't redirect if there is no authenticated user", %{conn: conn} do
-      session = conn |> get_session()
+      session = get_session(conn)
 
       assert {:cont, _updated_socket} =
                UserAuth.on_mount(

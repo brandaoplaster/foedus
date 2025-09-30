@@ -10,7 +10,7 @@ defmodule FoedusWeb.Components.UI.AddressesList do
   def addresses_list(assigns) do
     ~H"""
     <%= if @addresses != [] do %>
-      <.card title={@title} icon="zap" icon_color="red" class={["w-full", @class]}>
+      <.card title={@title} icon="hero-zap" icon_color="red" class={["w-full", @class]}>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div class="p-6">
             <div class="space-y-4">

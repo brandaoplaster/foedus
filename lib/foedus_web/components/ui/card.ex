@@ -24,7 +24,7 @@ defmodule FoedusWeb.Components.UI.Card do
             <div class="flex items-center gap-3">
               <%= if @icon do %>
                 <div class={["rounded-lg p-2", icon_bg_class(@icon_color)]}>
-                  <%!-- <.icon name={@icon} class={["w-5 h-5", icon_text_class(@icon_color)]} /> --%>
+                  <.icon name={@icon} class={["w-5 h-5", icon_text_class(@icon_color)]} />
                 </div>
               <% end %>
               <h3 class="text-lg font-semibold text-gray-900">{@title}</h3>

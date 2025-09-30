@@ -1,6 +1,8 @@
 defmodule FoedusWeb.DashboardLive.Index do
   use FoedusWeb, :live_view
 
+  import FoedusWeb.Components.UI.Icon
+
   @impl true
   def mount(_params, _session, socket) do
     case socket.assigns.current_user do
@@ -77,25 +79,29 @@ defmodule FoedusWeb.DashboardLive.Index do
   defp load_recent_activities(_user) do
     [
       %{
-        type: "success",
+        type: "hero-check",
+        color: "text-red-500",
         title: "Service Contract approved",
         description: "Client: Tech Solutions Ltd",
         time: "2 hours ago"
       },
       %{
-        type: "info",
+        type: "hero-information-circle",
+        color: "text-green-500",
         title: "New template created",
         description: "Template: Consulting Agreement",
         time: "4 hours ago"
       },
       %{
-        type: "warning",
+        type: "hero-shield-exclamation",
+        color: "text-yellow-500",
         title: "Contract awaiting signature",
         description: "Client: Innovative Startup",
         time: "6 hours ago"
       },
       %{
-        type: "info",
+        type: "hero-information-circle",
+        color: "text-blue-500",
         title: "Client filled out contract",
         description: "Software Contract - Company XYZ",
         time: "8 hours ago"
