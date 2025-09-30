@@ -22,11 +22,11 @@ defmodule Mix.Tasks.Db.Prime do
 
   use Mix.Task
 
-  alias Foedus.Repo
-  alias Foedus.Factory
   alias Foedus.Accounts.User
   alias Foedus.Contractors.{Contractor, Address, Representative}
   alias Foedus.Contracts.ContractTemplate
+  alias Foedus.Factory
+  alias Foedus.Repo
 
   @shortdoc "Prime database with random data for development"
 

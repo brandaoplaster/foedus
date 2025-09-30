@@ -4,11 +4,9 @@ defmodule Foedus.Accounts do
   """
 
   import Ecto.Query, warn: false
+
+  alias Foedus.Accounts.{User, UserNotifier, UserToken}
   alias Foedus.Repo
-
-  alias Foedus.Accounts.{User, UserToken, UserNotifier}
-
-  ## Database getters
 
   @doc """
   Gets a user by email.

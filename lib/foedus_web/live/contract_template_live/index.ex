@@ -9,9 +9,7 @@ defmodule FoedusWeb.ContractTemplateLive.Index do
   def mount(_params, _session, socket) do
     contract_templates = Contracts.list_contract_templates()
 
-    socket =
-      socket
-      |> stream(:contract_templates, contract_templates)
+    socket = stream(socket, :contract_templates, contract_templates)
 
     {:ok, socket}
   end
@@ -43,9 +41,7 @@ defmodule FoedusWeb.ContractTemplateLive.Index do
     {:ok, _} = Contracts.delete_contract_template(contract_template)
     socket = stream_delete(socket, :contract_templates, contract_template)
 
-    {:noreply,
-     socket
-     |> put_flash(:info, "Contract template deleted successfully")}
+    {:noreply, put_flash(socket, :info, "Contract template deleted successfully")}
   end
 
   def handle_info({:contract_template_created, contract_template}, socket) do

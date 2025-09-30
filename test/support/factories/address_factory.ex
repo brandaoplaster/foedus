@@ -7,7 +7,7 @@ defmodule Foedus.AddressFactory do
         %Address{
           address_type: Enum.random([:residential, :commercial, :billing]),
           street: Faker.Address.street_name(),
-          number: Faker.random_between(1, 9999) |> to_string(),
+          number: to_string(Faker.random_between(1, 9999)),
           complement: sequence(:complement, ["Apto 101", "Sala 205", "Bloco A", nil]),
           neighborhood: Faker.Address.secondary_address(),
           city: Faker.Address.city(),

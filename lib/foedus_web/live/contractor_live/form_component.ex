@@ -73,7 +73,7 @@ defmodule FoedusWeb.ContractorsLive.FormComponent do
     total_steps = length(socket.assigns.steps)
 
     if current_step < total_steps do
-      completed_steps = [current_step | socket.assigns.completed_steps] |> Enum.uniq()
+      completed_steps =  Enum.uniq([current_step | socket.assigns.completed_steps])
 
       socket =
         socket
@@ -99,8 +99,7 @@ defmodule FoedusWeb.ContractorsLive.FormComponent do
 
   def handle_event("validate", form_params, socket) do
     socket =
-      socket
-      |> assign(:form_data, Map.merge(socket.assigns.form_data, form_params))
+      assign(socket, :form_data, Map.merge(socket.assigns.form_data, form_params))
 
     {:noreply, socket}
   end
