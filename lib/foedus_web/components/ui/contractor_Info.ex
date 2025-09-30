@@ -18,7 +18,7 @@ defmodule FoedusWeb.Components.UI.ContractorInfo do
       <div class="p-6">
         <.card
           title={ContractorHelper.information_section_title(@contractor)}
-          icon="user-circle"
+          icon="hero-user-circle"
           icon_color="blue"
           class="w-full"
         >
