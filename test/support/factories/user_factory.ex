@@ -6,7 +6,8 @@ defmodule Foedus.UserFactory do
       def user_factory do
         %User{
           email: Faker.Internet.email(),
-          hashed_password: Bcrypt.hash_pwd_salt("password123")
+          hashed_password: Bcrypt.hash_pwd_salt("password123"),
+          company: build(:company)
         }
       end
     end
