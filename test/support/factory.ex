@@ -6,4 +6,6 @@ defmodule Foedus.Factory do
   use Foedus.ContractorFactory
   use Foedus.RepresentativeFactory
   use Foedus.AddressFactory
+  use Foedus.CompanyFactory
+  use Foedus.PlatformAccessFactory
 end
