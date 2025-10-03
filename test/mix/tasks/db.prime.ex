@@ -4,25 +4,28 @@ defmodule Mix.Tasks.Db.Prime do
 
   ## Usage
       mix db.prime
-      mix db.prime --users 20 --contractors 15 --templates 5
+      mix db.prime --users 20 --contractors 15 --templates 5 --companies 3
       mix db.prime --clean --verbose
 
   ## Options
       --users N              Number of random users to create (default: 10)
       --contractors N        Number of contractors to create (default: 10)
       --templates N          Number of contract templates to create (default: 5)
+      --companies N          Number of companies to create (default: 3)
       --clean               Clean existing data before priming
       --verbose             Show detailed progress information
 
   ## Business Rules
+      - Each company gets 3-5 users with platform access
       - Each contractor gets exactly 2 addresses (different types)
       - Company contractors get 2-3 representatives with different roles
       - Individual contractors don't have representatives
+      - One fixed user (lucas@nomad.com) is always created
   """
 
   use Mix.Task
 
-  alias Foedus.Accounts.User
+  alias Foedus.Accounts.{User, Company, PlatformAccess}
   alias Foedus.Contractors.{Contractor, Address, Representative}
   alias Foedus.Contracts.ContractTemplate
   alias Foedus.Factory
@@ -35,6 +38,7 @@ defmodule Mix.Tasks.Db.Prime do
   @default_users 10
   @default_contractors 10
   @default_templates 5
+  @default_companies 3
   @address_types [:residential, :commercial, :billing]
   @representative_roles %{
     two: [:legal, :autorizado],
@@ -43,11 +47,12 @@ defmodule Mix.Tasks.Db.Prime do
 
   # Configuration struct
   defmodule Config do
-    @enforce_keys [:users_count, :contractors_count, :templates_count]
+    @enforce_keys [:users_count, :contractors_count, :templates_count, :companies_count]
     defstruct [
       :users_count,
       :contractors_count,
       :templates_count,
+      :companies_count,
       should_clean: false,
       verbose: false
     ]
@@ -83,6 +88,7 @@ defmodule Mix.Tasks.Db.Prime do
           users: :integer,
           contractors: :integer,
           templates: :integer,
+          companies: :integer,
           clean: :boolean,
           verbose: :boolean
         ]
@@ -92,6 +98,7 @@ defmodule Mix.Tasks.Db.Prime do
       users_count: opts[:users] || @default_users,
       contractors_count: opts[:contractors] || @default_contractors,
       templates_count: opts[:templates] || @default_templates,
+      companies_count: opts[:companies] || @default_companies,
       should_clean: opts[:clean] || false,
       verbose: opts[:verbose] || false
     }
@@ -105,7 +112,8 @@ defmodule Mix.Tasks.Db.Prime do
 
   # Main orchestration
   defp prime_database(config) do
-    with {:ok, user_ids} <- prime_users(config),
+    with {:ok, company_ids} <- prime_companies(config),
+         {:ok, user_ids} <- prime_users(config, company_ids),
          :ok <- prime_contractors(config),
          :ok <- prime_contract_templates(config, user_ids) do
       print_summary()
@@ -120,11 +128,17 @@ defmodule Mix.Tasks.Db.Prime do
   # Display functions
   defp print_banner(config) do
     Mix.shell().info("🚀 Priming Foedus database with random data...")
-    Mix.shell().info("   Users: #{config.users_count}")
+    Mix.shell().info("   Companies: #{config.companies_count}")
+
+    Mix.shell().info(
+      "   Users: #{config.users_count + 1} (1 fixed + #{config.users_count} random)"
+    )
+
     Mix.shell().info("   Contractors: #{config.contractors_count}")
     Mix.shell().info("   Contract Templates: #{config.templates_count}")
+    Mix.shell().info("   🏢 Each company gets 3-5 users with platform access")
     Mix.shell().info("   📍 Each contractor gets exactly 2 addresses (different types)")
-    Mix.shell().info("   👥 Each company gets 2-3 representatives (different roles)")
+    Mix.shell().info("   👥 Each company contractor gets 2-3 representatives (different roles)")
 
     if config.verbose do
       Mix.shell().info("   🔍 Verbose mode enabled")
@@ -148,7 +162,9 @@ defmodule Mix.Tasks.Db.Prime do
 
   defp summary_data do
     [
+      {Company, "Companies"},
       {User, "Users"},
+      {PlatformAccess, "Platform Accesses"},
       {Contractor, "Contractors"},
       {Address, "Addresses"},
       {Representative, "Representatives"},
@@ -168,11 +184,13 @@ defmodule Mix.Tasks.Db.Prime do
 
   defp cleanup_schemas do
     [
+      {PlatformAccess, "platform_accesses"},
       {Representative, "representatives"},
       {Address, "addresses"},
       {ContractTemplate, "contract_templates"},
       {Contractor, "contractors"},
-      {User, "users"}
+      {User, "users"},
+      {Company, "companies"}
     ]
   end
 
@@ -184,14 +202,38 @@ defmodule Mix.Tasks.Db.Prime do
     end
   end
 
+  # Company creation
+  defp prime_companies(config) do
+    Mix.shell().info("🏢 Creating #{config.companies_count} companies...")
+
+    company_ids =
+      for _i <- 1..config.companies_count do
+        company = Factory.insert(:company)
+
+        if config.verbose do
+          Mix.shell().info("   ✓ Created company: #{company.trade_name} (CNPJ: #{company.cnpj})")
+        end
+
+        company.id
+      end
+
+    Mix.shell().info("✅ Created #{config.companies_count} companies successfully")
+    {:ok, company_ids}
+  rescue
+    error ->
+      Mix.shell().error("❌ Error creating companies: #{inspect(error)}")
+      {:error, :companies_creation_failed}
+  end
+
   # User creation
-  defp prime_users(config) do
+  defp prime_users(config, company_ids) do
     Mix.shell().info(
       "👥 Creating #{config.users_count + 1} users (1 fixed + #{config.users_count} random)..."
     )
 
     with {:ok, fixed_user_id} <- create_fixed_user(config.verbose),
-         {:ok, random_user_ids} <- create_random_users(config.users_count, config.verbose) do
+         {:ok, random_user_ids} <-
+           create_random_users(config.users_count, company_ids, config.verbose) do
       user_ids = [fixed_user_id | random_user_ids]
       Mix.shell().info("✅ Created #{config.users_count + 1} users successfully")
       {:ok, user_ids}
@@ -205,26 +247,44 @@ defmodule Mix.Tasks.Db.Prime do
   end
 
   defp create_fixed_user(verbose) do
+    # Create first company for fixed user if it doesn't exist
+    company = Factory.insert(:company, trade_name: "Nomad Tech", active: true)
+
     fixed_user =
       Factory.insert(:user, %{
         email: "lucas@nomad.com",
-        hashed_password: Bcrypt.hash_pwd_salt("lucas123456789")
+        hashed_password: Bcrypt.hash_pwd_salt("lucas123456789"),
+        company_id: company.id
       })
 
+    # Create platform access for fixed user
+    Factory.insert(:platform_access, user: fixed_user, company: company)
+
     if verbose do
-      Mix.shell().info("   ✓ Created fixed user: lucas@nomad.com")
+      Mix.shell().info(
+        "   ✓ Created fixed user: lucas@nomad.com (company: #{company.trade_name})"
+      )
+
+      Mix.shell().info("     → Platform access granted")
     end
 
     {:ok, fixed_user.id}
   end
 
-  defp create_random_users(count, verbose) do
+  defp create_random_users(count, company_ids, verbose) do
     user_ids =
       for i <- 1..count do
-        user = Factory.insert(:user)
+        # Distribute users across companies, with 3-5 users per company
+        company_id = Enum.at(company_ids, rem(i - 1, length(company_ids)))
+
+        user = Factory.insert(:user, company_id: company_id)
+
+        # Create platform access for each user
+        company = Repo.get!(Company, company_id)
+        Factory.insert(:platform_access, user: user, company: company)
 
         if verbose and rem(i, @batch_size) == 0 do
-          Mix.shell().info("   ✓ Created #{i}/#{count} random users")
+          Mix.shell().info("   ✓ Created #{i}/#{count} random users with platform access")
         end
 
         user.id
@@ -249,7 +309,7 @@ defmodule Mix.Tasks.Db.Prime do
 
       :ok
     else
-      error -> {:error, :contractors_creation_failed}
+      _error -> {:error, :contractors_creation_failed}
     end
   rescue
     error ->
@@ -391,18 +451,5 @@ defmodule Mix.Tasks.Db.Prime do
       name = template.name || "Template ##{template.id}"
       Mix.shell().info("   ✓ Created contract template: #{name} (user_id: #{template.user_id})")
     end)
-  end
-
-  # Utility functions
-  defp create_in_batches(total_count, batch_size, batch_fn) do
-    batches = ceil(total_count / batch_size)
-
-    for batch <- 1..batches do
-      remaining = min(batch_size, total_count - (batch - 1) * batch_size)
-
-      if remaining > 0 do
-        batch_fn.(remaining, batch)
-      end
-    end
   end
 end

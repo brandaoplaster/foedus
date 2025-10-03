@@ -505,4 +505,122 @@ defmodule Foedus.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "companies" do
+    alias Foedus.Accounts.Company
+
+    import Foedus.AccountsFixtures
+
+    @invalid_attrs %{active: nil, trade_name: nil, cnpj: nil}
+
+    test "list_companies/0 returns all companies" do
+      company = company_fixture()
+      assert Accounts.list_companies() == [company]
+    end
+
+    test "get_company!/1 returns the company with given id" do
+      company = company_fixture()
+      assert Accounts.get_company!(company.id) == company
+    end
+
+    test "create_company/1 with valid data creates a company" do
+      valid_attrs = %{active: true, trade_name: "some trade_name", cnpj: "some cnpj"}
+
+      assert {:ok, %Company{} = company} = Accounts.create_company(valid_attrs)
+      assert company.active == true
+      assert company.trade_name == "some trade_name"
+      assert company.cnpj == "some cnpj"
+    end
+
+    test "create_company/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_company(@invalid_attrs)
+    end
+
+    test "update_company/2 with valid data updates the company" do
+      company = company_fixture()
+      update_attrs = %{active: false, trade_name: "some updated trade_name", cnpj: "some updated cnpj"}
+
+      assert {:ok, %Company{} = company} = Accounts.update_company(company, update_attrs)
+      assert company.active == false
+      assert company.trade_name == "some updated trade_name"
+      assert company.cnpj == "some updated cnpj"
+    end
+
+    test "update_company/2 with invalid data returns error changeset" do
+      company = company_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_company(company, @invalid_attrs)
+      assert company == Accounts.get_company!(company.id)
+    end
+
+    test "delete_company/1 deletes the company" do
+      company = company_fixture()
+      assert {:ok, %Company{}} = Accounts.delete_company(company)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_company!(company.id) end
+    end
+
+    test "change_company/1 returns a company changeset" do
+      company = company_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_company(company)
+    end
+  end
+
+  describe "platform_accesses" do
+    alias Foedus.Accounts.PlatformAccess
+
+    import Foedus.AccountsFixtures
+
+    @invalid_attrs %{status: nil, password: nil, login: nil, deleted_at: nil}
+
+    test "list_platform_accesses/0 returns all platform_accesses" do
+      platform_access = platform_access_fixture()
+      assert Accounts.list_platform_accesses() == [platform_access]
+    end
+
+    test "get_platform_access!/1 returns the platform_access with given id" do
+      platform_access = platform_access_fixture()
+      assert Accounts.get_platform_access!(platform_access.id) == platform_access
+    end
+
+    test "create_platform_access/1 with valid data creates a platform_access" do
+      valid_attrs = %{status: true, password: "some password", login: "some login", deleted_at: ~U[2025-09-30 07:30:00Z]}
+
+      assert {:ok, %PlatformAccess{} = platform_access} = Accounts.create_platform_access(valid_attrs)
+      assert platform_access.status == true
+      assert platform_access.password == "some password"
+      assert platform_access.login == "some login"
+      assert platform_access.deleted_at == ~U[2025-09-30 07:30:00Z]
+    end
+
+    test "create_platform_access/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_platform_access(@invalid_attrs)
+    end
+
+    test "update_platform_access/2 with valid data updates the platform_access" do
+      platform_access = platform_access_fixture()
+      update_attrs = %{status: false, password: "some updated password", login: "some updated login", deleted_at: ~U[2025-10-01 07:30:00Z]}
+
+      assert {:ok, %PlatformAccess{} = platform_access} = Accounts.update_platform_access(platform_access, update_attrs)
+      assert platform_access.status == false
+      assert platform_access.password == "some updated password"
+      assert platform_access.login == "some updated login"
+      assert platform_access.deleted_at == ~U[2025-10-01 07:30:00Z]
+    end
+
+    test "update_platform_access/2 with invalid data returns error changeset" do
+      platform_access = platform_access_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_platform_access(platform_access, @invalid_attrs)
+      assert platform_access == Accounts.get_platform_access!(platform_access.id)
+    end
+
+    test "delete_platform_access/1 deletes the platform_access" do
+      platform_access = platform_access_fixture()
+      assert {:ok, %PlatformAccess{}} = Accounts.delete_platform_access(platform_access)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_platform_access!(platform_access.id) end
+    end
+
+    test "change_platform_access/1 returns a platform_access changeset" do
+      platform_access = platform_access_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_platform_access(platform_access)
+    end
+  end
 end
