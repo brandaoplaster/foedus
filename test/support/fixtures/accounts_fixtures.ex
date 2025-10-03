@@ -28,4 +28,37 @@ defmodule Foedus.AccountsFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  @doc """
+  Generate a company.
+  """
+  def company_fixture(attrs \\ %{}) do
+    {:ok, company} =
+      attrs
+      |> Enum.into(%{
+        active: true,
+        cnpj: "some cnpj",
+        trade_name: "some trade_name"
+      })
+      |> Foedus.Accounts.create_company()
+
+    company
+  end
+
+  @doc """
+  Generate a platform_access.
+  """
+  def platform_access_fixture(attrs \\ %{}) do
+    {:ok, platform_access} =
+      attrs
+      |> Enum.into(%{
+        deleted_at: ~U[2025-09-30 07:30:00Z],
+        login: "some login",
+        password: "some password",
+        status: true
+      })
+      |> Foedus.Accounts.create_platform_access()
+
+    platform_access
+  end
 end
