@@ -348,4 +348,196 @@ defmodule Foedus.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  alias Foedus.Accounts.Company
+
+  @doc """
+  Returns the list of companies.
+
+  ## Examples
+
+      iex> list_companies()
+      [%Company{}, ...]
+
+  """
+  def list_companies do
+    Repo.all(Company)
+  end
+
+  @doc """
+  Gets a single company.
+
+  Raises `Ecto.NoResultsError` if the Company does not exist.
+
+  ## Examples
+
+      iex> get_company!(123)
+      %Company{}
+
+      iex> get_company!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_company!(id), do: Repo.get!(Company, id)
+
+  @doc """
+  Creates a company.
+
+  ## Examples
+
+      iex> create_company(%{field: value})
+      {:ok, %Company{}}
+
+      iex> create_company(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_company(attrs \\ %{}) do
+    %Company{}
+    |> Company.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a company.
+
+  ## Examples
+
+      iex> update_company(company, %{field: new_value})
+      {:ok, %Company{}}
+
+      iex> update_company(company, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_company(%Company{} = company, attrs) do
+    company
+    |> Company.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a company.
+
+  ## Examples
+
+      iex> delete_company(company)
+      {:ok, %Company{}}
+
+      iex> delete_company(company)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_company(%Company{} = company) do
+    Repo.delete(company)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking company changes.
+
+  ## Examples
+
+      iex> change_company(company)
+      %Ecto.Changeset{data: %Company{}}
+
+  """
+  def change_company(%Company{} = company, attrs \\ %{}) do
+    Company.changeset(company, attrs)
+  end
+
+  alias Foedus.Accounts.PlatformAccess
+
+  @doc """
+  Returns the list of platform_accesses.
+
+  ## Examples
+
+      iex> list_platform_accesses()
+      [%PlatformAccess{}, ...]
+
+  """
+  def list_platform_accesses do
+    Repo.all(PlatformAccess)
+  end
+
+  @doc """
+  Gets a single platform_access.
+
+  Raises `Ecto.NoResultsError` if the Platform access does not exist.
+
+  ## Examples
+
+      iex> get_platform_access!(123)
+      %PlatformAccess{}
+
+      iex> get_platform_access!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_platform_access!(id), do: Repo.get!(PlatformAccess, id)
+
+  @doc """
+  Creates a platform_access.
+
+  ## Examples
+
+      iex> create_platform_access(%{field: value})
+      {:ok, %PlatformAccess{}}
+
+      iex> create_platform_access(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_platform_access(attrs \\ %{}) do
+    %PlatformAccess{}
+    |> PlatformAccess.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a platform_access.
+
+  ## Examples
+
+      iex> update_platform_access(platform_access, %{field: new_value})
+      {:ok, %PlatformAccess{}}
+
+      iex> update_platform_access(platform_access, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_platform_access(%PlatformAccess{} = platform_access, attrs) do
+    platform_access
+    |> PlatformAccess.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a platform_access.
+
+  ## Examples
+
+      iex> delete_platform_access(platform_access)
+      {:ok, %PlatformAccess{}}
+
+      iex> delete_platform_access(platform_access)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_platform_access(%PlatformAccess{} = platform_access) do
+    Repo.delete(platform_access)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking platform_access changes.
+
+  ## Examples
+
+      iex> change_platform_access(platform_access)
+      %Ecto.Changeset{data: %PlatformAccess{}}
+
+  """
+  def change_platform_access(%PlatformAccess{} = platform_access, attrs \\ %{}) do
+    PlatformAccess.changeset(platform_access, attrs)
+  end
 end
