@@ -1,6 +1,9 @@
 defmodule Foedus.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Foedus.Accounts.{Company, PlatformAccess}
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
@@ -9,6 +12,9 @@ defmodule Foedus.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+
+    belongs_to :company, Company
+    has_one :platform_access, PlatformAccess
 
     timestamps(type: :utc_datetime)
   end
