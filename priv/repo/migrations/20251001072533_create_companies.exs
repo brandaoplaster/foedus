@@ -12,6 +12,5 @@ defmodule Foedus.Repo.Migrations.CreateCompanies do
     end
     create unique_index(:companies, [:cnpj])
     create index(:companies, [:trade_name])
-    create index(:companies, [:cnpj])
   end
 end
