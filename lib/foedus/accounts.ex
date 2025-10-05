@@ -38,9 +38,18 @@ defmodule Foedus.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
-    if User.valid_password?(user, password), do: user
+      User
+      |> Repo.get_by(email: email)
+      |> Repo.preload(:platform_access)
+      |> validate_user(password)
   end
+
+  defp validate_user(%User{platform_access: platform_access} = user, password)
+       when not is_nil(platform_access) do
+    User.valid_password?(user, password) && user
+  end
+
+  defp validate_user(_, _), do: nil
 
   @doc """
   Gets a single user.
