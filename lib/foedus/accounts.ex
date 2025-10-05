@@ -540,4 +540,47 @@ defmodule Foedus.Accounts do
   def change_platform_access(%PlatformAccess{} = platform_access, attrs \\ %{}) do
     PlatformAccess.changeset(platform_access, attrs)
   end
+
+  def create_onboarding(attrs) do
+    attrs
+    |> build_onboard()
+    |> Repo.transaction()
+    |> handle_transaction_result()
+  end
+
+  defp build_onboard(attrs) do
+    company_params = attrs[:company]
+    user_params = attrs[:user]
+
+    Ecto.Multi.new()
+    |> insert_company(company_params)
+    |> insert_user(user_params)
+    |> insert_platform_access()
+  end
+
+  defp insert_company(multi, params) do
+    Ecto.Multi.insert(multi, :company, Company.changeset(%Company{}, params))
+  end
+
+  defp insert_user(multi, params) do
+    Ecto.Multi.insert(multi, :user, fn %{company: company} ->
+      params
+      |> Map.put("company_id", company.id)
+      |> then(&User.registration_changeset(%User{}, &1))
+    end)
+  end
+
+  defp insert_platform_access(multi) do
+    Ecto.Multi.insert(multi, :platform_access, fn %{user: user, company: company} ->
+      PlatformAccess.changeset(%PlatformAccess{}, %{
+        user_id: user.id,
+        company_id: company.id
+      })
+    end)
+  end
+
+  defp handle_transaction_result({:ok, result}), do: {:ok, result}
+
+  defp handle_transaction_result({:error, failed_operation, failed_value, changes}),
+    do: {:error, failed_operation, failed_value, changes}
 end
