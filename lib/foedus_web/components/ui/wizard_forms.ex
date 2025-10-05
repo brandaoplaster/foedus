@@ -258,15 +258,14 @@ defmodule FoedusWeb.Components.UI.WizardForms do
         <button
           type="button"
           phx-click="next_step"
-          phx-target={@target}
           class={next_button_classes()}
         >
           Next <.arrow_right_icon />
         </button>
       <% else %>
         <button
-          type="submit"
-          phx-target={@target}
+          type="button"
+          phx-click="submit"
           class={submit_button_classes()}
         >
           <.check_icon /> Submit Registration
