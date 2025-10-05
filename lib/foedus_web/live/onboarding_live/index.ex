@@ -3,6 +3,7 @@ defmodule FoedusWeb.OnboardingLive.Index do
 
   import FoedusWeb.Components.UI.WizardForms
 
+  alias Foedus.Accounts
   alias FoedusWeb.OnboardingLive.{CompanyForm, UserForm, ReviewForm}
 
   @impl true
@@ -56,8 +57,23 @@ defmodule FoedusWeb.OnboardingLive.Index do
 
   @impl true
   def handle_event("submit", _params, socket) do
-    socket = put_flash(socket, :info, "Onboarding completed successfully!")
-    {:noreply, socket}
+    case Accounts.create_onboarding(socket.assigns.form_data) do
+      {:ok, %{company: _company, user: _user, platform_access: _platform_access}} ->
+        socket =
+          socket
+          |> put_flash(:info, "Account created successfully!")
+          |> redirect(to: ~p"/users/log_in")
+
+        {:noreply, socket}
+
+      {:error, failed_operation, _failed_value, _changes} ->
+        socket =
+          socket
+          |> put_flash(:error, "Failed to create account. Please check your information.")
+          |> assign(:current_step, get_failed_step(failed_operation))
+
+        {:noreply, socket}
+    end
   end
 
   @impl true
@@ -74,6 +90,11 @@ defmodule FoedusWeb.OnboardingLive.Index do
     </div>
     """
   end
+
+  defp get_failed_step(:company), do: 1
+  defp get_failed_step(:user), do: 2
+  defp get_failed_step(:platform_access), do: 2
+  defp get_failed_step(_), do: 1
 
   defp build_steps do
     [
@@ -123,11 +144,12 @@ defmodule FoedusWeb.OnboardingLive.Index do
   defp assign_form_for_step(socket, step) do
     form_data = socket.assigns.form_data
 
-    data = case step do
-      1 -> Map.get(form_data, :company, %{})
-      2 -> Map.get(form_data, :user, %{})
-      _ -> %{}
-    end
+    data =
+      case step do
+        1 -> Map.get(form_data, :company, %{})
+        2 -> Map.get(form_data, :user, %{})
+        _ -> %{}
+      end
 
     assign(socket, :form, to_form(data))
   end
