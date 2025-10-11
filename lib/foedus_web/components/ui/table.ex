@@ -1,6 +1,6 @@
 defmodule FoedusWeb.Components.UI.Table do
   use Phoenix.Component
-  alias FoedusWeb.Components.Helpers.{Formatters, StreamHelpers, ActionRenderer}
+  alias FoedusWeb.Components.Helpers.{ActionRenderer, Formatters, StreamHelpers}
 
   @doc """
   Renders a fully customizable data table with Stream support

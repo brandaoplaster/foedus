@@ -5,11 +5,13 @@ defmodule FoedusWeb.ContractorLive.New do
 
   alias Foedus.Contractors
   alias Foedus.Contractors.Contractor
-  alias FoedusWeb.ContractorLive.AddressComponent
-  alias FoedusWeb.ContractorLive.PersonalInfoComponent
-  alias FoedusWeb.ContractorLive.CompanyInfoComponent
-  alias FoedusWeb.ContractorLive.AddressComponent
-  alias FoedusWeb.ContractorLive.RepresentativesComponent
+
+  alias FoedusWeb.ContractorLive.{
+    AddressComponent,
+    CompanyInfoComponent,
+    PersonalInfoComponent,
+    RepresentativesComponent
+  }
 
   @impl true
   def mount(_params, _session, socket) do
