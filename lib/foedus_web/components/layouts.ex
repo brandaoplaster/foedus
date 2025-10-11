@@ -11,8 +11,8 @@ defmodule FoedusWeb.Layouts do
 
   embed_templates "layouts/*"
 
-
   attr :current_user, :any, default: nil
+
   def app_header(assigns) do
     ~H"""
     <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
@@ -34,8 +34,12 @@ defmodule FoedusWeb.Layouts do
       <.link navigate={~p"/"} class="flex items-center space-x-2">
         <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
         </div>
         <span class="text-xl font-bold text-gray-900">Foedus</span>
@@ -45,6 +49,7 @@ defmodule FoedusWeb.Layouts do
   end
 
   attr :current_user, :any, default: nil
+
   def app_navigation(assigns) do
     ~H"""
     <%= if @current_user do %>
@@ -59,6 +64,7 @@ defmodule FoedusWeb.Layouts do
   end
 
   attr :current_user, :any, default: nil
+
   def app_user_menu(assigns) do
     ~H"""
     <div class="flex items-center space-x-4">
@@ -94,17 +100,18 @@ defmodule FoedusWeb.Layouts do
   end
 
   attr :current_user, :any, default: nil
+
   def app_mobile_menu(assigns) do
     ~H"""
     <%= if @current_user do %>
       <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-gray-200">
         <div class="space-y-2">
           <.mobile_nav_link navigate={~p"/dashboard"}>Dashboard</.mobile_nav_link>
-          <.mobile_nav_link navigate={~p"/contract_templates"} >Templates</.mobile_nav_link>
+          <.mobile_nav_link navigate={~p"/contract_templates"}>Templates</.mobile_nav_link>
           <.mobile_nav_link href="#">Contratos</.mobile_nav_link>
           <.mobile_nav_link href="#">Relatórios</.mobile_nav_link>
 
-          <hr class="my-2 border-gray-200">
+          <hr class="my-2 border-gray-200" />
 
           <.mobile_nav_link href={~p"/users/settings"}>Configurações</.mobile_nav_link>
           <.link
@@ -135,6 +142,7 @@ defmodule FoedusWeb.Layouts do
   attr :navigate, :string, default: nil
   attr :href, :string, default: nil
   slot :inner_block, required: true
+
   def nav_link(assigns) do
     ~H"""
     <.link
@@ -142,7 +150,7 @@ defmodule FoedusWeb.Layouts do
       href={@href}
       class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </.link>
     """
   end
@@ -150,6 +158,7 @@ defmodule FoedusWeb.Layouts do
   attr :navigate, :string, default: nil
   attr :href, :string, default: nil
   slot :inner_block, required: true
+
   def mobile_nav_link(assigns) do
     ~H"""
     <.link
@@ -157,7 +166,7 @@ defmodule FoedusWeb.Layouts do
       href={@href}
       class="block px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </.link>
     """
   end
@@ -171,7 +180,12 @@ defmodule FoedusWeb.Layouts do
         onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
     </div>

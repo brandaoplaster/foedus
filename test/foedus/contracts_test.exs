@@ -23,7 +23,9 @@ defmodule Foedus.ContractsTest do
     test "create_contract_template/1 with valid data creates a contract_template" do
       valid_attrs = %{title: "some title", content: "some content"}
 
-      assert {:ok, %ContractTemplate{} = contract_template} = Contracts.create_contract_template(valid_attrs)
+      assert {:ok, %ContractTemplate{} = contract_template} =
+               Contracts.create_contract_template(valid_attrs)
+
       assert contract_template.title == "some title"
       assert contract_template.content == "some content"
     end
@@ -36,21 +38,28 @@ defmodule Foedus.ContractsTest do
       contract_template = contract_template_fixture()
       update_attrs = %{title: "some updated title", content: "some updated content"}
 
-      assert {:ok, %ContractTemplate{} = contract_template} = Contracts.update_contract_template(contract_template, update_attrs)
+      result = Contracts.update_contract_template(contract_template, update_attrs)
+      assert {:ok, %ContractTemplate{} = contract_template} = result
       assert contract_template.title == "some updated title"
       assert contract_template.content == "some updated content"
     end
 
     test "update_contract_template/2 with invalid data returns error changeset" do
       contract_template = contract_template_fixture()
-      assert {:error, %Ecto.Changeset{}} = Contracts.update_contract_template(contract_template, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Contracts.update_contract_template(contract_template, @invalid_attrs)
+
       assert contract_template == Contracts.get_contract_template!(contract_template.id)
     end
 
     test "delete_contract_template/1 deletes the contract_template" do
       contract_template = contract_template_fixture()
       assert {:ok, %ContractTemplate{}} = Contracts.delete_contract_template(contract_template)
-      assert_raise Ecto.NoResultsError, fn -> Contracts.get_contract_template!(contract_template.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Contracts.get_contract_template!(contract_template.id)
+      end
     end
 
     test "change_contract_template/1 returns a contract_template changeset" do

@@ -4,7 +4,7 @@ defmodule FoedusWeb.OnboardingLive.Index do
   import FoedusWeb.Components.UI.WizardForms
 
   alias Foedus.Accounts
-  alias FoedusWeb.OnboardingLive.{CompanyForm, UserForm, ReviewForm}
+  alias FoedusWeb.OnboardingLive.{CompanyForm, ReviewForm, UserForm}
 
   @impl true
   def mount(_params, _session, socket) do

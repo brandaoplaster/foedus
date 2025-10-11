@@ -25,8 +25,8 @@ defmodule Mix.Tasks.Db.Prime do
 
   use Mix.Task
 
-  alias Foedus.Accounts.{User, Company, PlatformAccess}
-  alias Foedus.Contractors.{Contractor, Address, Representative}
+  alias Foedus.Accounts.{Company, PlatformAccess, User}
+  alias Foedus.Contractors.{Address, Contractor, Representative}
   alias Foedus.Contracts.ContractTemplate
   alias Foedus.Factory
   alias Foedus.Repo
@@ -151,10 +151,9 @@ defmodule Mix.Tasks.Db.Prime do
     Mix.shell().info("")
     Mix.shell().info("📊 Summary:")
 
-    summary_data()
-    |> Enum.each(fn {schema, name} ->
+    Enum.each(summary_data(), fn {schema, name} ->
       count = Repo.aggregate(schema, :count, :id)
-      Mix.shell().info("   #{name}: #{count}")
+      Mix.shell().info(" #{name}: #{count}")
     end)
 
     Mix.shell().info("")
@@ -176,8 +175,7 @@ defmodule Mix.Tasks.Db.Prime do
   defp clean_database(verbose) do
     Mix.shell().info("🧹 Cleaning existing data...")
 
-    cleanup_schemas()
-    |> Enum.each(&delete_schema_records(&1, verbose))
+    Enum.each(cleanup_schemas(), &delete_schema_records(&1, verbose))
 
     Mix.shell().info("✨ Data cleaned!")
   end

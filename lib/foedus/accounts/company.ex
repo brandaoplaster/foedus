@@ -2,7 +2,7 @@ defmodule Foedus.Accounts.Company do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Foedus.Accounts.{User, PlatformAccess}
+  alias Foedus.Accounts.{PlatformAccess, User}
 
   @required_fields ~w(trade_name cnpj active)a
 
