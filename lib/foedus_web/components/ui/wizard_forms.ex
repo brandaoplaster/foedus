@@ -125,7 +125,16 @@ defmodule FoedusWeb.Components.UI.WizardForms do
     <div class="min-h-[400px] mb-8">
       <%= if @current_step_config do %>
         <%= if is_review_step?(@current_step_config) do %>
-          <.review_step form_data={@form_data} form={@form} />
+          <%= if Map.has_key?(@current_step_config, :component) do %>
+            <.live_component
+              module={@current_step_config.component}
+              id={@current_step_config.id}
+              form={@form}
+              form_data={@form_data}
+            />
+          <% else %>
+            <.review_step form_data={@form_data} form={@form} />
+          <% end %>
         <% else %>
           <.live_component
             module={@current_step_config.component}
@@ -249,15 +258,14 @@ defmodule FoedusWeb.Components.UI.WizardForms do
         <button
           type="button"
           phx-click="next_step"
-          phx-target={@target}
           class={next_button_classes()}
         >
           Next <.arrow_right_icon />
         </button>
       <% else %>
         <button
-          type="submit"
-          phx-target={@target}
+          type="button"
+          phx-click="submit"
           class={submit_button_classes()}
         >
           <.check_icon /> Submit Registration
@@ -289,17 +297,6 @@ defmodule FoedusWeb.Components.UI.WizardForms do
           <.review_field label="Company" value="[Review data here]" />
           <.review_field label="CNPJ" value="[Review data here]" />
           <.review_field label="Email" value="[Review data here]" />
-        </.review_section>
-
-        <.review_section title="Representatives">
-          <.review_field label="Legal Rep" value="[Review data here]" />
-          <.review_field label="Authorized Rep" value="[Review data here]" />
-        </.review_section>
-
-        <.review_section title="Address">
-          <.review_field label="Street" value="[Review data here]" />
-          <.review_field label="City" value="[Review data here]" />
-          <.review_field label="State" value="[Review data here]" />
         </.review_section>
       </div>
     </div>
