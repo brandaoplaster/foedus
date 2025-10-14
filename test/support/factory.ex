@@ -8,4 +8,5 @@ defmodule Foedus.Factory do
   use Foedus.AddressFactory
   use Foedus.CompanyFactory
   use Foedus.PlatformAccessFactory
+  use Foedus.SignerFactory
 end
