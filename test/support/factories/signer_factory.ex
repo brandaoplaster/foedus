@@ -5,7 +5,7 @@ defmodule Foedus.SignerFactory do
     quote do
       def signer_factory do
         %Signer{
-          role: Enum.random([:legal, :autorizado]),
+          role: Enum.random(["witness", "contractee"]),
           name: Faker.Person.first_name(),
           status: Enum.random([true, false]),
           lastname: Faker.Person.last_name(),
