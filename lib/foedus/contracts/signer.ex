@@ -2,6 +2,8 @@ defmodule Foedus.Contracts.Signer do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Foedus.Accounts.Company
+
   @fields_required ~w(name lastname email role  company_id)a
   @fields_optional ~w(document birthdate status)a
 
@@ -15,7 +17,8 @@ defmodule Foedus.Contracts.Signer do
     field :email, :string
     field :document, :string
     field :birthdate, :date
-    field :company_id, :binary_id
+
+    belongs_to :company, Company
 
     timestamps(type: :utc_datetime)
   end
