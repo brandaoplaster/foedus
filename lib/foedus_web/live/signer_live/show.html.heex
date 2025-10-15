@@ -1,0 +1,83 @@
+<div class="min-h-screen p-2 bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <.breadcrumb>
+      <.breadcrumb_link navigate={~p"/signers"}>
+        Signers
+      </.breadcrumb_link>
+      <.breadcrumb_separator />
+      <.breadcrumb_current>
+        {full_name(@signer)}
+      </.breadcrumb_current>
+    </.breadcrumb>
+
+    <.show_header
+      title={full_name(@signer)}
+      subtitle={@signer.email}
+      description="Signer details and management"
+      icon="hero-user-circle"
+      back_url={~p"/signers"}
+      edit_url={~p"/signers/#{@signer.id}/edit"}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <.card title="Signer Information" icon="hero-user" icon_color="blue" class="w-full">
+          <.signer_details signer={@signer} />
+        </.card>
+
+        <.card title="Activity" icon="hero-clock" icon_color="green" class="w-full">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="p-6">
+              <div class="text-center py-8 text-gray-500">
+                <.icon name="hero-document-text" class="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p class="text-sm">No recent activity</p>
+              </div>
+            </div>
+          </div>
+        </.card>
+      </div>
+
+      <div class="space-y-6">
+        <.card title="Quick Actions" icon="hero-bolt" icon_color="yellow" class="w-full">
+          <div class="p-6 space-y-3">
+            <FoedusWeb.Components.UI.Button.button
+              variant={if @signer.status, do: "soft_red", else: "soft_green"}
+              size="lg"
+              icon={if @signer.status, do: "x-circle", else: "check-circle"}
+              full_width={true}
+              phx-click={if @signer.status, do: "deactivate_signer", else: "activate_signer"}
+              data-confirm={
+                if @signer.status,
+                  do: "Are you sure you want to deactivate this signer?",
+                  else: nil
+              }
+            >
+              {if @signer.status, do: "Deactivate Signer", else: "Activate Signer"}
+            </FoedusWeb.Components.UI.Button.button>
+          </div>
+        </.card>
+
+        <.card title="Metadata" icon="hero-information-circle" icon_color="purple" class="w-full">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="p-6 space-y-4">
+              <.metadata_card>
+                <.date_info_item
+                  icon="plus"
+                  title="Created"
+                  date={@signer.inserted_at}
+                  color="green"
+                />
+                <.date_info_item
+                  icon="refresh"
+                  title="Last Updated"
+                  date={@signer.updated_at}
+                  color="blue"
+                />
+              </.metadata_card>
+            </div>
+          </div>
+        </.card>
+      </div>
+    </div>
+  </div>
+</div>
