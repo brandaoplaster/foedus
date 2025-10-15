@@ -15,7 +15,7 @@ defmodule FoedusWeb.SignerLive.Index do
       |> assign(:form, to_form(changeset))
       |> stream(:signers, signers)
 
-    {:ok, assign(socket, :page_title, "Signers")}
+    {:ok, socket}
   end
 
   def handle_params(params, _url, socket) do
