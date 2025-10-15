@@ -18,4 +18,24 @@ defmodule Foedus.ContractsFixtures do
 
     contract_template
   end
+
+  @doc """
+  Generate a signer.
+  """
+  def signer_fixture(attrs \\ %{}) do
+    {:ok, signer} =
+      attrs
+      |> Enum.into(%{
+        birthdate: ~D[2025-10-13],
+        document: "some document",
+        email: "some email",
+        lastname: "some lastname",
+        name: "some name",
+        role: "some role",
+        status: true
+      })
+      |> Foedus.Contracts.create_signer()
+
+    signer
+  end
 end

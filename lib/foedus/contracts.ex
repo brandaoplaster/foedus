@@ -101,4 +101,100 @@ defmodule Foedus.Contracts do
   def change_contract_template(%ContractTemplate{} = contract_template, attrs \\ %{}) do
     ContractTemplate.changeset(contract_template, attrs)
   end
+
+  alias Foedus.Contracts.Signer
+
+  @doc """
+  Returns the list of signers.
+
+  ## Examples
+
+      iex> list_signers()
+      [%Signer{}, ...]
+
+  """
+  def list_signers do
+    Repo.all(Signer)
+  end
+
+  @doc """
+  Gets a single signer.
+
+  Raises `Ecto.NoResultsError` if the Signer does not exist.
+
+  ## Examples
+
+      iex> get_signer!(123)
+      %Signer{}
+
+      iex> get_signer!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_signer!(id), do: Repo.get!(Signer, id)
+
+  @doc """
+  Creates a signer.
+
+  ## Examples
+
+      iex> create_signer(%{field: value})
+      {:ok, %Signer{}}
+
+      iex> create_signer(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_signer(attrs \\ %{}) do
+    %Signer{}
+    |> Signer.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a signer.
+
+  ## Examples
+
+      iex> update_signer(signer, %{field: new_value})
+      {:ok, %Signer{}}
+
+      iex> update_signer(signer, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_signer(%Signer{} = signer, attrs) do
+    signer
+    |> Signer.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a signer.
+
+  ## Examples
+
+      iex> delete_signer(signer)
+      {:ok, %Signer{}}
+
+      iex> delete_signer(signer)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_signer(%Signer{} = signer) do
+    Repo.delete(signer)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking signer changes.
+
+  ## Examples
+
+      iex> change_signer(signer)
+      %Ecto.Changeset{data: %Signer{}}
+
+  """
+  def change_signer(%Signer{} = signer, attrs \\ %{}) do
+    Signer.changeset(signer, attrs)
+  end
 end
