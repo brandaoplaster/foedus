@@ -22,6 +22,14 @@ defmodule FoedusWeb.SignerLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  defp apply_action(socket, :new, _params) do
+    socket
+    |> assign(:page_title, "New Signer")
+    |> assign(:signer, %Signer{})
+  end
+
+
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Signers")
