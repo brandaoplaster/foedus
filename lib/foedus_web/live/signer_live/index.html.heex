@@ -50,8 +50,9 @@
     >
       <div class="!p-0 !h-full !overflow-hidden">
         <.live_component
-          module={FoedusWeb.SignerLive.New}
+          module={FoedusWeb.SignerLive.FormComponent }
           id={@signer.id || :new}
+          current_user={@current_user}
           title={@page_title}
           action={@live_action}
           signer={@signer}
