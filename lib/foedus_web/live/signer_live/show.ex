@@ -19,8 +19,6 @@ defmodule FoedusWeb.SignerLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    Contracts.get_signer!(id) |> IO.inspect(label: "signer")
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
