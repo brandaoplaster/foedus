@@ -27,7 +27,7 @@ defmodule Foedus.Contracts.Signer do
   def changeset(signer, attrs) do
     signer
     |> cast(attrs, @fields_required ++ @fields_optional)
-    |> validate_required([@fields_required])
+    |> validate_required(@fields_required)
     |> validate_length(:name, min: 2, max: 100)
     |> validate_length(:lastname, min: 2, max: 100)
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+\.[^\s]+$/, message: "must be a valid email")
