@@ -10,17 +10,15 @@ defmodule FoedusWeb.Components.UI.FormBuilder do
 
   def form_builder(assigns) do
     ~H"""
-    <div class="flex-1 p-8 overflow-y-auto">
-      <.form
-        for={@for}
-        id={@id}
-        action={@action}
-        class={["space-y-8", @class]}
-        {@rest}
-      >
-        {render_slot(@inner_block)}
-      </.form>
-    </div>
+    <.form
+      for={@for}
+      id={@id}
+      action={@action}
+      class={["space-y-8", @class]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.form>
     """
   end
 end
