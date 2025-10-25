@@ -22,6 +22,14 @@ defmodule FoedusWeb.SignerLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  def handle_event("delete", %{"id" => id}, socket) do
+    signer = Contracts.get_signer!(id)
+    {:ok, _} = Contracts.delete_signer(signer)
+    socket = stream_delete(socket, :signer, signer)
+
+    {:noreply, put_flash(socket, :info, "Signer deleted successfully")}
+  end
+
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Signer")
