@@ -11,7 +11,7 @@ defmodule Foedus.Contracts.Signer do
   @foreign_key_type :binary_id
   schema "signers" do
     field :name, :string
-    field :status, :boolean, default: false
+    field :status, :boolean, default: true
     field :role, :string
     field :lastname, :string
     field :email, :string
