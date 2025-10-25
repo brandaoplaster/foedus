@@ -13,7 +13,7 @@ defmodule FoedusWeb.SignerLive.FormComponent do
 
   def mount(_params, _session, socket) do
     signers = Contracts.list_signers()
-    changeset = Contracts.change_signer(%Signer{}, %{})
+    changeset = Contracts.change_signer(%Signer{status: true}, %{})
 
     socket =
       socket
@@ -25,14 +25,7 @@ defmodule FoedusWeb.SignerLive.FormComponent do
 
   @impl true
   def update(%{signer: signer} = assigns, socket) do
-    signer = Map.put(signer, :status, signer.status || true)
-
-    signer =
-      Map.update(signer, :status, true, fn
-        nil -> true
-        val -> val
-      end)
-
+    signer = if is_nil(signer.status), do: Map.put(signer, :status, true), else: signer
     changeset = Contracts.change_signer(signer)
 
     {:ok,
@@ -59,15 +52,6 @@ defmodule FoedusWeb.SignerLive.FormComponent do
     company_id = socket.assigns.current_user.company_id
     signer_params = normalize_status_param(signer_params)
     save_signer(socket, socket.assigns.action, signer_params, company_id)
-  end
-
-  defp normalize_status_param(params) do
-    case Map.get(params, "status") do
-      nil -> Map.put(params, "status", false)
-      "true" -> Map.put(params, "status", true)
-      val when is_boolean(val) -> params
-      _ -> Map.put(params, "status", false)
-    end
   end
 
   defp save_signer(socket, :new, signer_params, company_id) do
@@ -100,6 +84,22 @@ defmodule FoedusWeb.SignerLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
+  end
+
+  defp normalize_status_param(%{"status" => "true"} = params) do
+    Map.put(params, "status", true)
+  end
+
+  defp normalize_status_param(%{"status" => "false"} = params) do
+    Map.put(params, "status", false)
+  end
+
+  defp normalize_status_param(%{"status" => val} = params) when is_boolean(val) do
+    params
+  end
+
+  defp normalize_status_param(params) do
+    Map.put(params, "status", false)
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
