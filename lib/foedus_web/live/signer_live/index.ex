@@ -28,11 +28,24 @@ defmodule FoedusWeb.SignerLive.Index do
     |> assign(:signer, %Signer{})
   end
 
-
-
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Signers")
     |> assign(:signer, nil)
+  end
+
+  def handle_info({:signer_created, signer}, socket) do
+    socket = stream_insert(socket, :signer, signer, at: 0)
+    {:noreply, socket}
+  end
+
+  def handle_info({:signer_updated, signer}, socket) do
+    socket = stream_insert(socket, :signer, signer)
+    {:noreply, socket}
+  end
+
+  def handle_info({:signer_deleted, signer}, socket) do
+    socket = stream_delete(socket, :signer, signer)
+    {:noreply, socket}
   end
 end
