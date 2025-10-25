@@ -57,7 +57,7 @@ defmodule FoedusWeb.Layouts do
         <.nav_link navigate={~p"/dashboard"}>Dashboard</.nav_link>
         <.nav_link navigate={~p"/contract_templates"}>Contract Templates</.nav_link>
         <.nav_link navigate={~p"/contractors"}>Contractors</.nav_link>
-        <.nav_link href="#">Relatórios</.nav_link>
+        <.nav_link navigate={~p"/signers"}>Signers</.nav_link>
       </nav>
     <% end %>
     """
@@ -108,8 +108,8 @@ defmodule FoedusWeb.Layouts do
         <div class="space-y-2">
           <.mobile_nav_link navigate={~p"/dashboard"}>Dashboard</.mobile_nav_link>
           <.mobile_nav_link navigate={~p"/contract_templates"}>Templates</.mobile_nav_link>
-          <.mobile_nav_link href="#">Contratos</.mobile_nav_link>
-          <.mobile_nav_link href="#">Relatórios</.mobile_nav_link>
+          <.mobile_nav_link navigate={~p"/contractors"}>Contractors</.mobile_nav_link>
+          <.mobile_nav_link navigate={~p"/signers"}>Signers</.mobile_nav_link>
 
           <hr class="my-2 border-gray-200" />
 

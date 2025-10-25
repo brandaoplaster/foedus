@@ -1,0 +1,43 @@
+<div class="w-full h-full flex flex-col">
+  <.form_header
+    title="New Signer"
+    subtitle="Add signers to your contracts"
+    icon="user"
+    on_close={JS.patch(~p"/signers")}
+  />
+  
+  <div class="flex-1 p-8 overflow-y-auto">
+    <.form_builder
+      for={@form}
+      id="signer-form"
+      phx-target={@myself}
+      phx-change="validate"
+      phx-submit="save"
+      class="space-y-6"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <.field_input field={@form[:name]} label="First Name" required />
+        <.field_input field={@form[:lastname]} label="Last Name" required />
+        <.field_input field={@form[:email]} type="email" label="Email Address" required />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <.field_input field={@form[:document]} label="Document Number" required />
+        <.field_input field={@form[:birthdate]} type="date" label="Birth Date" required />
+        <.field_input field={@form[:role]} type="select" label="Role" prompt="Select a role"
+          options={[{"Director", "director"}, {"Manager", "manager"}, {"Coordinator", "coordinator"}]}
+          required />
+      </div>
+
+      <.field_input field={@form[:status]} type="checkbox" label="Active" />
+
+      <div class="flex gap-4">
+        <.form_actions 
+          on_cancel={JS.patch(~p"/signers")} 
+          submit_text="Create Signer"
+          show_icon={true}
+        />
+      </div>
+    </.form_builder>
+  </div>
+</div>

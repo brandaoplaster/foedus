@@ -66,6 +66,11 @@ defmodule FoedusWeb.Router do
       live "/contract_templates/new", ContractTemplateLive.Index, :new
       live "/contract_templates/:id/edit", ContractTemplateLive.Index, :edit
 
+      live "/signers", SignerLive.Index, :index
+      live "/signers/new", SignerLive.Index, :new
+      live "/signers/:id/edit", SignerLive.Index, :edit
+      live "/signers/:id", SignerLive.Show, :show
+
       live "/contract_templates/:id", ContractTemplateLive.Show, :show
     end
   end
