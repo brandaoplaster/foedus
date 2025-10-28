@@ -7,18 +7,6 @@ defmodule FoedusWeb.UserLoginLive do
       <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
         <.header class="text-center mb-8">
           <span class="block text-3xl font-bold text-gray-900">Log in to account</span>
-          <:subtitle>
-            <span class="text-sm text-gray-500">
-              Don't have an account?
-              <.link
-                navigate={~p"/users/register"}
-                class="font-semibold text-indigo-600 hover:underline"
-              >
-                Sign up
-              </.link>
-              for an account now.
-            </span>
-          </:subtitle>
         </.header>
 
         <.simple_form

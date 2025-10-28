@@ -29,9 +29,6 @@ defmodule FoedusWeb.UserForgotPasswordLive do
         </.simple_form>
 
         <p class="text-center text-sm mt-6 text-gray-600">
-          <.link href={~p"/users/register"} class="font-semibold text-indigo-600 hover:underline">
-            Register
-          </.link>
           <span class="mx-2">|</span>
           <.link href={~p"/users/log_in"} class="font-semibold text-indigo-600 hover:underline">
             Log in
