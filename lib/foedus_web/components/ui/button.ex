@@ -1,8 +1,6 @@
 defmodule FoedusWeb.Components.UI.Button do
   use Phoenix.Component
 
-  alias FoedusWeb.Components.UI.Icon
-
   @base_class "inline-flex items-center justify-center gap-2 border font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 
   @variants %{

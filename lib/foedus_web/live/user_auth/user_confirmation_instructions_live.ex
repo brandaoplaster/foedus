@@ -1,4 +1,4 @@
-defmodule FoedusWeb.UserConfirmationInstructionsLive do
+defmodule FoedusWeb.UserAuth.UserConfirmationInstructionsLive do
   use FoedusWeb, :live_view
 
   alias Foedus.Accounts
@@ -21,8 +21,7 @@ defmodule FoedusWeb.UserConfirmationInstructionsLive do
       </.simple_form>
 
       <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
+        <.link href={~p"/users/log_in"}>Log in</.link>
       </p>
     </div>
     """

@@ -201,12 +201,6 @@ defmodule FoedusWeb.Layouts do
       >
         Entrar
       </.link>
-      <.link
-        href={~p"/users/register"}
-        class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
-      >
-        Cadastrar
-      </.link>
     </div>
     """
   end

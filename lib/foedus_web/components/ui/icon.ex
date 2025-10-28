@@ -15,7 +15,7 @@ defmodule FoedusWeb.Components.UI.Icon do
       <.icon name="check-circle" class="w-4 h-4 text-green-500" />
   """
   attr :name, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""

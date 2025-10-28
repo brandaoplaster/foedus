@@ -34,25 +34,4 @@ defmodule FoedusWeb.SignerLive.Show do
     name = String.trim("#{first} #{last}")
     if name == "", do: "Signer ##{signer.id}", else: name
   end
-
-  defp format_document(document) when is_binary(document) do
-    document
-    |> String.replace(~r/[^\d]/, "")
-    |> case do
-      <<a::binary-size(3), b::binary-size(3), c::binary-size(3), d::binary-size(2)>> ->
-        "#{a}.#{b}.#{c}-#{d}"
-
-      <<a::binary-size(2), b::binary-size(3), c::binary-size(3), d::binary-size(4), e::binary-size(2)>> ->
-        "#{a}.#{b}.#{c}/#{d}-#{e}"
-
-      doc ->
-        doc
-    end
-  end
-
-  defp format_document(nil), do: "N/A"
-
-  defp format_date(%Date{} = date), do: Calendar.strftime(date, "%d/%m/%Y")
-  defp format_date(nil), do: "N/A"
-  defp format_date(_), do: "N/A"
 end
