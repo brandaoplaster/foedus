@@ -3,7 +3,7 @@ defmodule FoedusWeb.Components.UI.Card do
 
   import FoedusWeb.Components.UI.Icon
 
-  attr :class, :string, default: ""
+  attr :class, :any, default: ""
   attr :title, :string, default: nil
   attr :icon, :string, default: nil
   attr :icon_color, :string, default: "gray"
@@ -82,12 +82,4 @@ defmodule FoedusWeb.Components.UI.Card do
   defp icon_text_class("yellow"), do: "text-yellow-600"
   defp icon_text_class("indigo"), do: "text-indigo-600"
   defp icon_text_class(_), do: "text-gray-600"
-
-  defp stat_bg_class("blue"), do: "bg-blue-500"
-  defp stat_bg_class("green"), do: "bg-green-500"
-  defp stat_bg_class("purple"), do: "bg-purple-500"
-  defp stat_bg_class("red"), do: "bg-red-500"
-  defp stat_bg_class("yellow"), do: "bg-yellow-500"
-  defp stat_bg_class("indigo"), do: "bg-indigo-500"
-  defp stat_bg_class(_), do: "bg-gray-500"
 end

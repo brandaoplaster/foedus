@@ -5,7 +5,7 @@ defmodule FoedusWeb.Components.UI.AddressesList do
 
   attr :addresses, :list, required: true
   attr :title, :string, default: "Addresses"
-  attr :class, :string, default: ""
+  attr :class, :any, default: ""
 
   def addresses_list(assigns) do
     ~H"""
