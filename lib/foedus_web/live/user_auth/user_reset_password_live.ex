@@ -1,4 +1,4 @@
-defmodule FoedusWeb.UserResetPasswordLive do
+defmodule FoedusWeb.UserAuth.UserResetPasswordLive do
   use FoedusWeb, :live_view
 
   alias Foedus.Accounts

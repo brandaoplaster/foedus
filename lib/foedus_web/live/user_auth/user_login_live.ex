@@ -1,4 +1,4 @@
-defmodule FoedusWeb.UserLoginLive do
+defmodule FoedusWeb.UserAuth.UserLoginLive do
   use FoedusWeb, :live_view
 
   def render(assigns) do

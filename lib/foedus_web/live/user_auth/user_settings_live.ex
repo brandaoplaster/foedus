@@ -1,4 +1,4 @@
-defmodule FoedusWeb.UserSettingsLive do
+defmodule FoedusWeb.UserAuth.UserSettingsLive do
   use FoedusWeb, :live_view
 
   alias Foedus.Accounts

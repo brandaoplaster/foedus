@@ -1,4 +1,4 @@
-defmodule FoedusWeb.UserConfirmationInstructionsLive do
+defmodule FoedusWeb.UserAuth.UserConfirmationInstructionsLive do
   use FoedusWeb, :live_view
 
   alias Foedus.Accounts
