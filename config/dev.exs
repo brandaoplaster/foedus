@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :foedus, Foedus.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "db",
-  database: "foedus_dev",
+  username: System.get_env("DATABASE_USER") || "postgres",
+  password: System.get_env("DATABASE_PASSWORD") || "postgres",
+  hostname: System.get_env("DATABASE_HOST") || "my_doctor_db",
+  database: System.get_env("DATABASE_NAME") || "my_doctor_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
