@@ -28,7 +28,7 @@ defmodule FoedusWeb.Router do
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{FoedusWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/", HomeLive.Index, :index
-      live "/users/log_in", UserLoginLive, :new
+      live "/users/log_in", UserAuth.UserLoginLive, :new
       live "/onboarding", OnboardingLive.Index, :index
 
       live "/users/reset_password", UserAuth.UserForgotPasswordLive, :new
