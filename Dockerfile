@@ -1,80 +1,102 @@
-# Use Elixir official image
+# ============================================
+# Stage 0: Common base (system dependencies)
+# ============================================
 FROM elixir:1.15.7-alpine AS base
 
-# Install build dependencies
 RUN apk add --no-cache \
     build-base \
     git \
-    postgresql-client \
-    inotify-tools \
-    curl \
-    sudo
+    openssh-client \
+    postgresql-dev \
+    && rm -rf /var/cache/apk/*
 
-# Create user with same UID/GID as host user
-ARG USER_ID=1000
-ARG GROUP_ID=1000
-RUN addgroup -g ${GROUP_ID} -S elixir && \
-    adduser -u ${USER_ID} -S elixir -G elixir -s /bin/sh
-
-# Set work directory
 WORKDIR /app
+RUN mix do local.hex --force, local.rebar --force
 
-# Change ownership
-RUN chown -R elixir:elixir /app
-
-# Switch to elixir user
-USER elixir
-
-# Install Hex and Rebar
-RUN mix local.hex --force && \
-    mix local.rebar --force
-
-#############################################
-# Dependencies stage - for caching
-#############################################
+# ============================================
+# Stage 1: Dependencies (better caching)
+# ============================================
 FROM base AS deps
 
-# Copy mix files first for better caching
-COPY --chown=elixir:elixir mix.exs mix.lock ./
+# Copy only dependency files first
+COPY mix.exs mix.lock ./
+RUN --mount=type=ssh mix deps.get --only prod
 
-# Install dependencies
-RUN mix deps.get
+# ============================================
+# Stage 2: Development
+# ============================================
+FROM base AS dev
 
-#############################################
-# Development stage
-#############################################
-FROM deps AS development
+# Add only what is specific for development
+RUN apk add --no-cache nodejs npm inotify-tools \
+    && rm -rf /var/cache/apk/*
 
-# Copy scripts first (they change less frequently)
-COPY --chown=elixir:elixir scripts/ ./scripts/
+COPY mix.exs mix.lock ./
+COPY config config
+RUN --mount=type=ssh mix deps.get
 
-# Make ALL scripts executable - FIX AQUI
-RUN find ./scripts -type f -name "*.sh" -exec chmod +x {} \;
+# The rest will be set up via volume in Compose
 
-# Copy rest of application code
-COPY --chown=elixir:elixir . .
+# ============================================
+# Stage 3: Build (production)
+# ============================================
+FROM base AS build
 
-# Compile dependencies only (code will be compiled by script)
-RUN mix deps.compile
+# Add only build-specific files
+RUN apk add --no-cache nodejs npm \
+    && rm -rf /var/cache/apk/*
 
-# Default command will be overridden by docker-compose
-CMD ["mix", "phx.server"]
+ARG mix_env=prod
+WORKDIR /app
 
-#############################################
-# Production stage (for future use)
-#############################################
-FROM deps AS production
+# 1. Dependencies first (better caching)
+COPY mix.exs mix.lock ./
+RUN --mount=type=ssh mix deps.get --only $mix_env
 
-ENV MIX_ENV=prod
+# 2. Configurations
+COPY config config
 
-# Copy application code
-COPY --chown=elixir:elixir . .
+# 3. Source code
+COPY lib lib
+COPY priv priv
+COPY scripts scripts
 
-# Compile application
-RUN mix deps.compile && \
-    mix compile
+# 4. Assets
+COPY assets assets
+RUN if [ -f "assets/package.json" ]; then \
+    cd assets && npm ci --omit=dev && \
+    (npm run deploy || npm run build || true); \
+    fi
 
-# Create release
-RUN mix release
+# 5. Compile and make release
+RUN MIX_ENV=$mix_env mix compile
+RUN MIX_ENV=$mix_env mix release
 
-CMD ["_build/prod/rel/foedus/bin/foedus", "start"]
+# ============================================
+# Stage 4: Runtime (production – minimal image)
+# ============================================
+FROM alpine:3.20 AS app
+
+RUN apk add --no-cache \
+    openssl \
+    ncurses-libs \
+    libstdc++ \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+
+ARG mix_env=prod
+WORKDIR /app
+
+RUN addgroup -g 1000 -S appuser && \
+    adduser -u 1000 -S appuser -G appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser:appuser
+
+COPY --from=build --chown=appuser:appuser /app/_build/${mix_env}/rel/sendwise ./
+COPY --from=build --chown=appuser:appuser /app/scripts/start.sh ./start.sh
+
+ENV HOME=/app \
+    PATH=/app/bin:$PATH
+
+CMD ["sh", "./start.sh"]

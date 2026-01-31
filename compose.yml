@@ -1,0 +1,53 @@
+services:
+  foedus:
+    build:
+      context: .
+      target: dev
+    restart: unless-stopped
+    container_name: foedus
+    command: mix phx.server
+    stdin_open: true
+    tty: true
+    depends_on:
+      foedus_db:
+        condition: service_healthy
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/app
+      - foedus_deps:/app/deps
+      - foedus_build:/app/_build
+    env_file:
+      - .env
+    environment:
+      - PHX_LIVE_RELOAD_POLLING=true
+    networks:
+      - foedus_net
+
+  foedus_db:
+    image: "postgres:17"
+    container_name: foedus_db
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - "foedus_db:/var/lib/postgresql/data"
+    networks:
+      - foedus_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  foedus_net:
+
+volumes:
+  foedus_db:
+  foedus_deps:
+  foedus_build:
